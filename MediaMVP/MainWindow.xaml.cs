@@ -24,5 +24,10 @@ namespace MediaMVP
         {
             InitializeComponent();
         }
+
+        private void MenuItem_Close(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

@@ -3,10 +3,73 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:ax="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:MediaMVP"
         mc:Ignorable="d"
         Title="MediaMVP" Height="450" Width="800">
     <Grid>
-        <Label Content="Hello World"/>
+        <!-- Groesseneinstellungen -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Menubar -->
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <Menu.Style>
+                    <Style>
+                        <Setter Property="MenuItem.FontSize" Value="14"/>
+                        <Setter Property="MenuItem.FontFamily" Value="Calibri"/>
+                    </Style>
+                </Menu.Style>
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Open"/>
+                    <MenuItem Header="_Close" Click="MenuItem_Close"/>
+                    <MenuItem Header="_Save"/>
+                </MenuItem>
+                <MenuItem Header="_Test">
+                    <MenuItem Header="_Wow"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        
+        <!-- Main Content -->
+        <dock:DockingManager Grid.Row="1">
+            <dock:LayoutRoot>
+                <dock:LayoutPanel>
+                    
+                    <!-- Playlist links-->
+                    <dock:LayoutAnchorablePaneGroup Orientation="Vertical"
+                                                    DockWidth="0.2*">
+                        <dock:LayoutAnchorablePane>
+                            <dock:LayoutAnchorable Title="Playlists"
+                                                   CanHide="False"
+                                                   CanClose="False">
+                                <ComboBox Name="Combobox_Playlistselection" 
+                                          Height="20"/>
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
+                        <dock:LayoutAnchorablePane>
+                            <dock:LayoutAnchorable Title="Playlist" 
+                                                   CanClose="False">
+                                <ListBox />
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
+                    </dock:LayoutAnchorablePaneGroup>
+                    
+                    <!-- Mediaplayer in der Mitte -->
+                    <dock:LayoutAnchorablePane>
+                        <dock:LayoutAnchorable Title="Mediaplayer">
+                            <MediaElement Source="../../static files/intro.mp4"
+                                          Stretch="Fill"/>
+                        </dock:LayoutAnchorable>
+                    </dock:LayoutAnchorablePane>
+                    
+                    
+                </dock:LayoutPanel>
+            </dock:LayoutRoot>    
+        </dock:DockingManager>
     </Grid>
 </Window>
