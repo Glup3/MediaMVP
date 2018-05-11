@@ -86,6 +86,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Media.cs" />
+    <Compile Include="MediaLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

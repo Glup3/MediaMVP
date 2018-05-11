@@ -8,6 +8,13 @@
         xmlns:local="clr-namespace:MediaMVP"
         mc:Ignorable="d"
         Title="MediaMVP" Height="450" Width="800">
+    <!--
+    <Window.Resources>
+        <local:MediaLoader x:Key="Data"/>
+    </Window.Resources>-->
+    <Window.DataContext>
+        <local:MediaLoader/>
+    </Window.DataContext>
     <Grid>
         <!-- Groesseneinstellungen -->
         <Grid.RowDefinitions>
@@ -29,6 +36,9 @@
                     <MenuItem Header="_Close" Click="MenuItem_Close"/>
                     <MenuItem Header="_Save"/>
                 </MenuItem>
+                <MenuItem Header="Settings">
+                    <MenuItem Header="SetDirectory"></MenuItem>
+                </MenuItem>
                 <MenuItem Header="_Test">
                     <MenuItem Header="_Wow"/>
                 </MenuItem>
@@ -42,19 +52,19 @@
                     
                     <!-- Playlist links-->
                     <dock:LayoutAnchorablePaneGroup Orientation="Vertical"
-                                                    DockWidth="0.2*">
-                        <dock:LayoutAnchorablePane>
-                            <dock:LayoutAnchorable Title="Playlists"
+                                                    DockWidth="0.2*" >
+                        <dock:LayoutAnchorablePane DockHeight="0.2*">
+                            <dock:LayoutAnchorable Title="Source"
                                                    CanHide="False"
                                                    CanClose="False">
-                                <ComboBox Name="Combobox_Playlistselection" 
-                                          Height="20"/>
+                                <ComboBox SelectedIndex="0" Name="Combobox_Playlistselection" ItemsSource="{Binding Sources}" SelectedValuePath="Value" SelectedValue="{Binding Media, Mode=OneWayToSource}" DisplayMemberPath="Key"
+                                    Height="20"/>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
                         <dock:LayoutAnchorablePane>
-                            <dock:LayoutAnchorable Title="Playlist" 
+                            <dock:LayoutAnchorable Title="Media" 
                                                    CanClose="False">
-                                <ListBox />
+                                <ListBox SelectedItem="{Binding CMedia}" ItemsSource="{Binding Media}"/>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
                     </dock:LayoutAnchorablePaneGroup>
@@ -62,7 +72,7 @@
                     <!-- Mediaplayer in der Mitte -->
                     <dock:LayoutAnchorablePane>
                         <dock:LayoutAnchorable Title="Mediaplayer">
-                            <MediaElement Source="../../static files/intro.mp4"
+                            <MediaElement Source="{Binding CMedia.MPath}"
                                           Stretch="Fill"/>
                         </dock:LayoutAnchorable>
                     </dock:LayoutAnchorablePane>
