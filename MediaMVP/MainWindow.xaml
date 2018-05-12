@@ -7,12 +7,15 @@
         xmlns:ax="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:MediaMVP"
         mc:Ignorable="d"
-        Title="MediaMVP" Height="450" Width="800" KeyDown="Window_MouseDown" MouseMove="Window_MouseMove">
+        Title="MediaMVP" Height="450" Width="800" KeyDown="Window_KeyDown" MouseMove="Window_MouseMove">
     <!--
     <Window.Resources>
         <local:MediaLoader x:Key="Data"/>
     </Window.Resources>-->
-    
+    <!--Steht auch im Code Behind. Hier nur, weils angenehmer ist-
+    <Window.DataContext>
+        <local:MediaLoader/>
+    </Window.DataContext>-->
     <Grid>
         <!-- Groesseneinstellungen -->
         <Grid.RowDefinitions>
@@ -35,7 +38,7 @@
                     <MenuItem Header="_Save"/>
                 </MenuItem>
                 <MenuItem Header="Settings">
-                    <MenuItem Header="SetDirectory"></MenuItem>
+                    <MenuItem Header="SetDirectory" Click="OpenDirectoryDialog"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="_Test">
                     <MenuItem Header="_Wow"/>
@@ -55,7 +58,7 @@
                             <dock:LayoutAnchorable Title="Source"
                                                    CanHide="False"
                                                    CanClose="False">
-                                <ComboBox SelectedIndex="0" Name="Combobox_Playlistselection" ItemsSource="{Binding Sources}" SelectedValuePath="Value" SelectedValue="{Binding Media, Mode=OneWayToSource}" DisplayMemberPath="Key"
+                                <ComboBox SelectedIndex="0" Name="Sources" ItemsSource="{Binding Sources}" SelectedValuePath="Value" SelectedValue="{Binding Media, Mode=OneWayToSource}" DisplayMemberPath="Key"
                                     Height="20"/>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
