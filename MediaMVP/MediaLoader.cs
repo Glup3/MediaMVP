@@ -17,13 +17,12 @@ namespace MediaMVP
         {
             //GetMedia("");
            // Media = GetMediaENum("C:/Users/Granit/Desktop/KONFIG", new List<string> { ".mp3",".mp4"});
-            sources = new Dictionary<string,IEnumerable<Media>>();
-            sources.Add("Path", GetMediaENum("C:/Users/Granit/Desktop/KONFIG", new List<string> { ".mp3", ".mp4" }));
-            sources.Add("PlayList 1", GetMediaENum("C:/Users/Granit/Desktop/KONFIG", new List<string> { ".mp4" }));
+            sources = new ObservableDictionary<string,IEnumerable<Media>>();
+            sources.Add("Path", Enumerable.Empty<Media>());
         }
 
-        private Dictionary<string,IEnumerable<Media>> sources;
-        public Dictionary<string,IEnumerable<Media>> Sources
+        private ObservableDictionary<string,IEnumerable<Media>> sources;
+        public ObservableDictionary<string,IEnumerable<Media>> Sources
         {
             get { return sources; }
             set { sources = value; OnPropertyChanged(); }
@@ -44,8 +43,8 @@ namespace MediaMVP
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
-        public IEnumerable<Media> GetMediaENum(String path, List<String> ext)
+       
+        public static IEnumerable<Media> GetMediaENum(String path, List<String> ext)
         {
             /*var myFiles = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
                  .Where(s => ext.Contains(Path.GetExtension(s)));
@@ -64,7 +63,6 @@ namespace MediaMVP
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
     }
 }
+

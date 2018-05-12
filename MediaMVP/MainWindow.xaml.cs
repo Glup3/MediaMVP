@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,9 +25,12 @@ namespace MediaMVP
         private bool first;
         private bool wait;
         DispatcherTimer inactivity;
+        MediaLoader media;
         public MainWindow()
         {
             inactivity = new DispatcherTimer();
+            media = new MediaLoader();
+            DataContext = media;
             InitializeComponent();
         }
 
@@ -35,7 +39,7 @@ namespace MediaMVP
             this.Close();
         }
 
-        private void Window_MouseDown(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F11 && !first)
             {
@@ -85,6 +89,30 @@ namespace MediaMVP
                 timerforfadeout();
             }
 
+        }
+
+        private void OpenDirectoryDialog(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+              System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+              String path = dialog.SelectedPath;
+                //!String.IsNullOrEmpty(path)
+                if (result.ToString().Equals("OK"))
+                {
+                    Boolean set = false;
+                    if (media.Media.Equals(media.Sources["Path"]))
+                        set = true;
+                    media.Sources.Remove("Path");
+                    media.Sources["Path"] = MediaLoader.GetMediaENum(path, new List<string> { ".mp3",".mp4"});
+                    if (set)
+                    {
+                        Sources.SelectedIndex = media.Sources.Count-1;
+                        media.Media = media.Sources["Path"];
+                        media.CMedia = null;
+                    }
+                }
+            }
         }
     }
 }
