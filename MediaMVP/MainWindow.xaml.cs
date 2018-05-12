@@ -26,8 +26,9 @@ namespace MediaMVP
         DispatcherTimer inactivity;
         public MainWindow()
         {
-            inactivity = new DispatcherTimer();
             InitializeComponent();
+            inactivity = new DispatcherTimer();
+            DataContext = new MediaLoader();
         }
 
         private void MenuItem_Close(object sender, RoutedEventArgs e)

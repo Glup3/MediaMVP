@@ -7,14 +7,12 @@
         xmlns:ax="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:MediaMVP"
         mc:Ignorable="d"
-        Title="MediaMVP" Height="450" Width="800" KeyDown="Window_KeyDown" MouseMove="Window_MouseMove">
+        Title="MediaMVP" Height="450" Width="800" KeyDown="Window_MouseDown" MouseMove="Window_MouseMove">
     <!--
     <Window.Resources>
         <local:MediaLoader x:Key="Data"/>
     </Window.Resources>-->
-    <Window.DataContext>
-        <local:MediaLoader/>
-    </Window.DataContext>
+    
     <Grid>
         <!-- Groesseneinstellungen -->
         <Grid.RowDefinitions>
