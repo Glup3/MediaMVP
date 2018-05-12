@@ -64,5 +64,7 @@ namespace MediaMVP
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
     }
 }
