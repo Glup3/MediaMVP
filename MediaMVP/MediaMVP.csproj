@@ -137,5 +137,8 @@
   <ItemGroup>
     <Content Include="static files\intro.mp4" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Playlists\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
