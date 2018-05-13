@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -16,23 +17,51 @@ namespace MediaMVP
         public MediaLoader()
         {
             //GetMedia("");
-           // Media = GetMediaENum("C:/Users/Granit/Desktop/KONFIG", new List<string> { ".mp3",".mp4"});
-            sources = new ObservableDictionary<string,IEnumerable<Media>>();
-            sources.Add("Path", Enumerable.Empty<Media>());
+            // Media = GetMediaENum("C:/Users/Granit/Desktop/KONFIG", new List<string> { ".mp3",".mp4"});
+            FreeExtensions = new ObservableCollection<Extension>();
+            UsedExtensions = new ObservableCollection<Extension>();
+            UsedExtensions.Add(new Extension(".mp3"));
+            UsedExtensions.Add(new Extension(".mp4"));
+            extensions = new ObservableCollection<Extension>();
+            LoadExtensions();
+            sources = new ObservableDictionary<string,ObservableCollection<Media>>();
+            sources.Add("Path", new ObservableCollection<Media>());
+            sources.Add("Playlist 1", GetFiles("C:/Users/Granit/Desktop/KONFIG"));
         }
 
-        private ObservableDictionary<string,IEnumerable<Media>> sources;
-        public ObservableDictionary<string,IEnumerable<Media>> Sources
+        private ObservableDictionary<string,ObservableCollection<Media>> sources;
+        public ObservableDictionary<string,ObservableCollection<Media>> Sources
         {
             get { return sources; }
             set { sources = value; OnPropertyChanged(); }
         }
 
-        private IEnumerable<Media> media;
-        public IEnumerable<Media> Media
+        private ObservableCollection<Extension> freeextensions;
+        public ObservableCollection<Extension> FreeExtensions
+        {
+            get { return freeextensions; }
+            set { freeextensions = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<Extension> usedextensions;
+        public ObservableCollection<Extension> UsedExtensions
+        {
+            get { return usedextensions; }
+            set { usedextensions = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<Extension> extensions;
+        public ObservableCollection<Extension> Extensions
+        {
+            get { return extensions; }
+            set { extensions = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<Media> media;
+        public ObservableCollection<Media> Media
         {
             get { return media; }
-            set { media = value; OnPropertyChanged(); }
+            set { media = GetMedia(value,extensions); OnPropertyChanged(); }
         }
 
         private Media cmedia;
@@ -44,19 +73,62 @@ namespace MediaMVP
 
         public event PropertyChangedEventHandler PropertyChanged;
        
-        public static IEnumerable<Media> GetMediaENum(String path, List<String> ext)
+        public static ObservableCollection<Media> GetMediaENum(String path, ObservableCollection<Extension> ext)
         {
             /*var myFiles = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
                  .Where(s => ext.Contains(Path.GetExtension(s)));
-            */List<Media> res = new List<Media>(){ };
-            foreach (String fileExtension in ext)
+            */ObservableCollection<Media> res = new ObservableCollection<Media>(){ };
+            foreach (Extension fileExtension in ext)
             {
                 foreach (String file in Directory.EnumerateFiles(path,"*.*", SearchOption.AllDirectories))
                 {
-                    if(fileExtension.Contains(Path.GetExtension(file)))res.Add(new Media(file));
+                    if(fileExtension.Name.Contains(Path.GetExtension(file)))res.Add(new Media(file));
                 }
             }
             return res;
+        }
+
+        public static ObservableCollection<Media> GetFiles(String path)
+        {
+            /*var myFiles = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
+                 .Where(s => ext.Contains(Path.GetExtension(s)));
+            */
+            if (path == null) return null;
+            ObservableCollection<Media> res = new ObservableCollection<Media>() { };
+                foreach (String file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories))
+                {
+                  res.Add(new Media(file));
+                }
+            return res;
+        }
+
+        public static ObservableCollection<Media> GetMedia(ObservableCollection<Media> files,ObservableCollection<Extension> ext)
+        {
+            if (files == null) return null;
+            ObservableCollection<Media> res = new ObservableCollection<Media>() { };
+            foreach (Extension fileExtension in ext)
+            {
+                foreach (Media m in files)
+                {
+                    if (fileExtension.Name.Contains(Path.GetExtension(m.MPath))) res.Add(m);
+                }
+            }
+            return res;
+        }
+
+        public void LoadExtensions()
+        {
+            Extensions.Clear();
+            foreach (Extension e in UsedExtensions)
+            {
+                if(e.Selected)Extensions.Add(e);
+            }
+        }
+
+        public void ReloadMedia(ObservableCollection<Media> m)
+        {
+            LoadExtensions();
+            Media = m;
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

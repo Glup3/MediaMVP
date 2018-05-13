@@ -26,6 +26,8 @@ namespace MediaMVP
         private bool wait;
         DispatcherTimer inactivity;
         MediaLoader media;
+        public ExtensionDialog extdia;
+
         public MainWindow()
         {
             inactivity = new DispatcherTimer();
@@ -100,18 +102,32 @@ namespace MediaMVP
                 //!String.IsNullOrEmpty(path)
                 if (result.ToString().Equals("OK"))
                 {
-                    Boolean set = false;
-                    if (media.Media.Equals(media.Sources["Path"]))
-                        set = true;
+                    int idx = Sources.SelectedIndex;
+                    
                     media.Sources.Remove("Path");
-                    media.Sources["Path"] = MediaLoader.GetMediaENum(path, new List<string> { ".mp3",".mp4"});
-                    if (set)
+                    media.Sources["Path"] = MediaLoader.GetFiles(path);
+                    if (idx!= Sources.SelectedIndex)
                     {
+                        Debug.WriteLine("a");
                         Sources.SelectedIndex = media.Sources.Count-1;
                         media.Media = media.Sources["Path"];
                         media.CMedia = null;
                     }
                 }
+            }
+        }
+
+        private void OpenExtDialog(object sender, RoutedEventArgs e)
+        {
+            if (extdia == null)
+            {
+                extdia = new ExtensionDialog(this,media);
+                //extdia.Owner = this;
+                extdia.Show();
+            }
+            else
+            {
+                extdia.Focus();
             }
         }
     }

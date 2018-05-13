@@ -38,7 +38,8 @@
                     <MenuItem Header="_Save"/>
                 </MenuItem>
                 <MenuItem Header="Settings">
-                    <MenuItem Header="SetDirectory" Click="OpenDirectoryDialog"></MenuItem>
+                    <MenuItem Header="Set Default Path" Click="OpenDirectoryDialog"></MenuItem>
+                    <MenuItem Header="Manage Extensions" Click="OpenExtDialog"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="_Test">
                     <MenuItem Header="_Wow"/>
@@ -53,7 +54,7 @@
                     
                     <!-- Playlist links-->
                     <dock:LayoutAnchorablePaneGroup Orientation="Vertical"
-                                                    DockWidth="0.2*" >
+                                                    DockWidth="0.22*" >
                         <dock:LayoutAnchorablePane DockHeight="0.2*">
                             <dock:LayoutAnchorable Title="Source"
                                                    CanHide="False"
@@ -62,10 +63,27 @@
                                     Height="20"/>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
+                        <dock:LayoutAnchorablePane DockHeight="0.2*">
+                            <dock:LayoutAnchorable Title="Manage Playlists"
+                                                   CanHide="False"
+                                                   CanClose="False">
+                                <StackPanel Orientation="Horizontal" local:MarginSetter.Margin="2">
+                                    <Button>Add New</Button>
+                                    <Button IsEnabled="False">Edit</Button>
+                                    <Button IsEnabled="False">Remove</Button>
+                                </StackPanel>
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
                         <dock:LayoutAnchorablePane>
                             <dock:LayoutAnchorable Title="Media" 
                                                    CanClose="False">
-                                <ListBox SelectedItem="{Binding CMedia}" ItemsSource="{Binding Media}"/>
+                                <ListBox SelectedItem="{Binding CMedia}" ItemsSource="{Binding Media}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding MName}"></Label>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
                     </dock:LayoutAnchorablePaneGroup>
@@ -77,8 +95,6 @@
                                           Stretch="Fill"/>
                         </dock:LayoutAnchorable>
                     </dock:LayoutAnchorablePane>
-                    
-                    
                 </dock:LayoutPanel>
             </dock:LayoutRoot>    
         </dock:DockingManager>
