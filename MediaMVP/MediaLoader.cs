@@ -18,12 +18,28 @@ namespace MediaMVP
         {
             //GetMedia("");
             // Media = GetMediaENum("C:/Users/Granit/Desktop/KONFIG", new List<string> { ".mp3",".mp4"});
-            FreeExtensions = new ObservableCollection<Extension>();
+            /*FreeExtensions = new ObservableCollection<Extension>();
             UsedExtensions = new ObservableCollection<Extension>();
             UsedExtensions.Add(new Extension(".mp3"));
+            UsedExtensions.Add(new Extension(".mp4"));*/
+            usedextensions = new ObservableCollection<Extension>() { };
+            extensions = new ObservableCollection<Extension>() { };
+            UsedExtensions.Add(new Extension(".mp3"));
             UsedExtensions.Add(new Extension(".mp4"));
-            extensions = new ObservableCollection<Extension>();
-            LoadExtensions();
+            UsedExtensions.Add(new Extension(".asf"));
+            UsedExtensions.Add(new Extension(".wma"));
+            UsedExtensions.Add(new Extension(".wmv"));
+            UsedExtensions.Add(new Extension(".aac"));
+            UsedExtensions.Add(new Extension(".3gp"));
+            UsedExtensions.Add(new Extension(".3g2"));
+            UsedExtensions.Add(new Extension(".m4a"));
+            UsedExtensions.Add(new Extension(".m4b"));
+            UsedExtensions.Add(new Extension(".mpg"));
+            UsedExtensions.Add(new Extension(".mpeg"));
+            UsedExtensions.Add(new Extension(".divx"));
+            UsedExtensions.Add(new Extension(".xvid"));
+            UsedExtensions.Add(new Extension(".h264"));
+            //LoadExtensions();
             sources = new ObservableDictionary<string,ObservableCollection<Media>>();
             sources.Add("Path", new ObservableCollection<Media>());
             sources.Add("Playlist 1", GetFiles("C:/Users/Granit/Desktop/KONFIG"));
@@ -61,7 +77,7 @@ namespace MediaMVP
         public ObservableCollection<Media> Media
         {
             get { return media; }
-            set { media = GetMedia(value,extensions); OnPropertyChanged(); }
+            set { media = GetMedia(value,UsedExtensions); OnPropertyChanged(); }
         }
 
         private Media cmedia;
@@ -108,6 +124,7 @@ namespace MediaMVP
             ObservableCollection<Media> res = new ObservableCollection<Media>() { };
             foreach (Extension fileExtension in ext)
             {
+                if(fileExtension.Selected)
                 foreach (Media m in files)
                 {
                     if (fileExtension.Name.Contains(Path.GetExtension(m.MPath))) res.Add(m);
@@ -127,9 +144,9 @@ namespace MediaMVP
 
         public void ReloadMedia(ObservableCollection<Media> m)
         {
-            LoadExtensions();
             Media = m;
         }
+
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

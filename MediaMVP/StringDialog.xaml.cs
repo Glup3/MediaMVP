@@ -35,5 +35,11 @@ namespace MediaMVP
             if (!String.IsNullOrEmpty(ResponseText)) DialogResult = true;
             else MessageBox.Show("Please enter something");
         }
+
+        private void ResponseTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(ResponseText)) DialogResult = true;
+            else MessageBox.Show("Please enter something");
+        }
     }
 }

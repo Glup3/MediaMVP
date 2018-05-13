@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -105,10 +106,10 @@ namespace MediaMVP
                     int idx = Sources.SelectedIndex;
                     
                     media.Sources.Remove("Path");
-                    media.Sources["Path"] = MediaLoader.GetFiles(path);
+                    media.Sources["Path"] = MediaLoader.GetMediaENum(path,media.UsedExtensions);
                     if (idx!= Sources.SelectedIndex)
                     {
-                        Debug.WriteLine("a");
+                       // Debug.WriteLine("a");
                         Sources.SelectedIndex = media.Sources.Count-1;
                         media.Media = media.Sources["Path"];
                         media.CMedia = null;
@@ -117,7 +118,8 @@ namespace MediaMVP
             }
         }
 
-        private void OpenExtDialog(object sender, RoutedEventArgs e)
+
+            private void OpenExtDialog(object sender, RoutedEventArgs e)
         {
             if (extdia == null)
             {
@@ -129,6 +131,21 @@ namespace MediaMVP
             {
                 extdia.Focus();
             }
+        }
+
+        private void AddPlaylist(object sender, RoutedEventArgs e)
+        {
+            PlaylistDialog pld = new PlaylistDialog(media);
+            pld.Show();
+        }
+
+        private void ActivateExt(object sender, MouseButtonEventArgs e)
+        {
+            var s = sender as ListViewItem;
+            var c = s.Content as Extension;
+            c.Selected = !c.Selected;
+            media.ReloadMedia(Sources.SelectedValue as ObservableCollection<Media>);
+            c.Selected = !c.Selected;
         }
     }
 }

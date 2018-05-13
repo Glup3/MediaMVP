@@ -8,10 +8,11 @@
         xmlns:local="clr-namespace:MediaMVP"
         mc:Ignorable="d"
         Title="MediaMVP" Height="450" Width="800" KeyDown="Window_KeyDown" MouseMove="Window_MouseMove">
-    <!--
+    
     <Window.Resources>
-        <local:MediaLoader x:Key="Data"/>
-    </Window.Resources>-->
+        <!--<local:MediaLoader x:Key="Data"/>-->
+        <local:IsPlaylistConverter x:Key="PlayConv"/>
+    </Window.Resources>
     <!--Steht auch im Code Behind. Hier nur, weils angenehmer ist-
     <Window.DataContext>
         <local:MediaLoader/>
@@ -39,7 +40,6 @@
                 </MenuItem>
                 <MenuItem Header="Settings">
                     <MenuItem Header="Set Default Path" Click="OpenDirectoryDialog"></MenuItem>
-                    <MenuItem Header="Manage Extensions" Click="OpenExtDialog"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="_Test">
                     <MenuItem Header="_Wow"/>
@@ -54,7 +54,7 @@
                     
                     <!-- Playlist links-->
                     <dock:LayoutAnchorablePaneGroup Orientation="Vertical"
-                                                    DockWidth="0.22*" >
+                                                    DockWidth="0.6*" >
                         <dock:LayoutAnchorablePane DockHeight="0.2*">
                             <dock:LayoutAnchorable Title="Source"
                                                    CanHide="False"
@@ -68,13 +68,36 @@
                                                    CanHide="False"
                                                    CanClose="False">
                                 <StackPanel Orientation="Horizontal" local:MarginSetter.Margin="2">
-                                    <Button>Add New</Button>
-                                    <Button IsEnabled="False">Edit</Button>
-                                    <Button IsEnabled="False">Remove</Button>
+                                    <Button Click="AddPlaylist">Add New</Button>
+                                    <Button Name="EditP" IsEnabled="{Binding ElementName=Sources, Path=SelectedItem, Converter={StaticResource PlayConv}}">Edit</Button>
+                                    <Button Name="RemoveP" IsEnabled="{Binding ElementName=EditP,Path=IsEnabled}">Remove</Button>
                                 </StackPanel>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
                         <dock:LayoutAnchorablePane>
+                            <dock:LayoutAnchorable Title="Filter Extensions"
+                                                   CanHide="False"
+                                                   CanClose="False">
+                                <ListView ItemsSource="{Binding UsedExtensions}" SelectionMode="Multiple">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Name}" Width="110"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.Resources>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ActivateExt"/>
+                                        </Style>
+                                    </ListView.Resources>
+                                </ListView>
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
+                    </dock:LayoutAnchorablePaneGroup>
+                    <dock:LayoutAnchorablePaneGroup>
+                    <dock:LayoutAnchorablePane DockWidth="1*">
                             <dock:LayoutAnchorable Title="Media" 
                                                    CanClose="False">
                                 <ListBox SelectedItem="{Binding CMedia}" ItemsSource="{Binding Media}">
@@ -89,7 +112,7 @@
                     </dock:LayoutAnchorablePaneGroup>
                     
                     <!-- Mediaplayer in der Mitte -->
-                    <dock:LayoutAnchorablePane>
+                    <dock:LayoutAnchorablePane DockWidth="3*">
                         <dock:LayoutAnchorable Title="Mediaplayer">
                             <MediaElement Source="{Binding CMedia.MPath}"
                                           Stretch="Fill"/>

@@ -76,6 +76,9 @@
     <Compile Include="Extension.cs" />
     <Compile Include="IsPlaylistConverter.cs" />
     <Compile Include="MarginSetter.cs" />
+    <Compile Include="PlaylistDialog.xaml.cs">
+      <DependentUpon>PlaylistDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StringDialog.xaml.cs">
       <DependentUpon>StringDialog.xaml</DependentUpon>
     </Compile>
@@ -99,6 +102,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PlaylistDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StringDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
