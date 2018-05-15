@@ -69,8 +69,8 @@
                                                    CanClose="False">
                                 <StackPanel Orientation="Horizontal" local:MarginSetter.Margin="2">
                                     <Button Click="AddPlaylist">Add New</Button>
-                                    <Button Name="EditP" IsEnabled="{Binding ElementName=Sources, Path=SelectedItem, Converter={StaticResource PlayConv}}">Edit</Button>
-                                    <Button Name="RemoveP" IsEnabled="{Binding ElementName=EditP,Path=IsEnabled}">Remove</Button>
+                                    <Button Click="EditPlaylist" Name="EditP" IsEnabled="{Binding ElementName=Sources, Path=SelectedItem, Converter={StaticResource PlayConv}}">Edit</Button>
+                                    <Button Click="RemovePlaylist" Name="RemoveP" IsEnabled="{Binding ElementName=EditP,Path=IsEnabled}">Remove</Button>
                                 </StackPanel>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
@@ -78,7 +78,7 @@
                             <dock:LayoutAnchorable Title="Filter Extensions"
                                                    CanHide="False"
                                                    CanClose="False">
-                                <ListView ItemsSource="{Binding UsedExtensions}" SelectionMode="Multiple">
+                                <ListView Name="Extensions" ItemsSource="{Binding UsedExtensions}" SelectionMode="Multiple">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
@@ -90,6 +90,9 @@
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                                             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ActivateExt"/>
+                                        </Style>
+                                        <Style TargetType="ListView">
+                                            <EventSetter Event="PreviewMouseWheel" Handler="RefreshExt"/>
                                         </Style>
                                     </ListView.Resources>
                                 </ListView>

@@ -136,6 +136,7 @@ namespace MediaMVP
         private void AddPlaylist(object sender, RoutedEventArgs e)
         {
             PlaylistDialog pld = new PlaylistDialog(media);
+            pld.Owner = this;
             pld.Show();
         }
 
@@ -146,6 +147,33 @@ namespace MediaMVP
             c.Selected = !c.Selected;
             media.ReloadMedia(Sources.SelectedValue as ObservableCollection<Media>);
             c.Selected = !c.Selected;
+        }
+
+        private void RefreshExt(object sender, MouseWheelEventArgs e)
+        {
+            Debug.WriteLine("a");
+            var lv = sender as ListView;
+            var c = lv.Items as ItemCollection;
+            foreach (ListViewItem li in c)
+            {
+                var ext = li.Content as Extension;
+                li.IsSelected = ext.Selected;
+            }
+        }
+
+        private void RemovePlaylist(object sender, RoutedEventArgs e)
+        {
+            var idx = Sources.SelectedIndex;
+            var i = (KeyValuePair<String, ObservableCollection<Media>>)Sources.SelectedItem;
+            media.Sources.Remove(i.Key);
+            Sources.SelectedIndex = idx>0 ? idx-1:0;
+        }
+
+        private void EditPlaylist(object sender, RoutedEventArgs e)
+        {
+            EditPlaylist ep = new EditPlaylist(media,Sources.SelectedItem);
+            ep.Owner = this;
+            ep.Show();
         }
     }
 }

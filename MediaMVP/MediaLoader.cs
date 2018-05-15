@@ -39,11 +39,25 @@ namespace MediaMVP
             UsedExtensions.Add(new Extension(".divx"));
             UsedExtensions.Add(new Extension(".xvid"));
             UsedExtensions.Add(new Extension(".h264"));
-            //LoadExtensions();
+            String se = "";
+            String fe = "All Media Files (";
+            String te = "";
+            foreach (Extension ext in UsedExtensions)
+            {
+                te += "*" + ext.Name+";";
+                se += (ext.Name.Remove(0, 1)) + " (*" + ext.Name + ")|" + "*" + ext.Name + "|";
+            }
+            int c = te.Count();
+            te = te.Remove(c - 1, 1);
+            fe += te + ")|";
+            c = se.Count();
+            extString = fe+te+"|"+se.Remove(c - 1, 1);
+            Debug.WriteLine(extString);
             sources = new ObservableDictionary<string,ObservableCollection<Media>>();
             sources.Add("Path", new ObservableCollection<Media>());
-            sources.Add("Playlist 1", GetFiles("C:/Users/Granit/Desktop/KONFIG"));
         }
+
+        public static String extString;
 
         private ObservableDictionary<string,ObservableCollection<Media>> sources;
         public ObservableDictionary<string,ObservableCollection<Media>> Sources
