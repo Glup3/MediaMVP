@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,12 @@ namespace MediaMVP
             media = new MediaLoader();
             DataContext = media;
             InitializeComponent();
+            var c = Sources.Items as ItemCollection;
+            foreach (Extension li in c)
+            {
+                //Debug.WriteLine(li.Selected);
+                //li.Selected = !li.Selected;
+            }
         }
 
         private void MenuItem_Close(object sender, RoutedEventArgs e)
@@ -114,6 +121,7 @@ namespace MediaMVP
                         media.Media = media.Sources["Path"];
                         media.CMedia = null;
                     }
+                    File.WriteAllText(media.path,path);
                 }
             }
         }
@@ -145,19 +153,19 @@ namespace MediaMVP
             var s = sender as ListViewItem;
             var c = s.Content as Extension;
             c.Selected = !c.Selected;
+            Debug.WriteLine(c.Name+" "+c.Selected);
             media.ReloadMedia(Sources.SelectedValue as ObservableCollection<Media>);
-            c.Selected = !c.Selected;
+            //c.Selected = !c.Selected;
         }
 
         private void RefreshExt(object sender, MouseWheelEventArgs e)
         {
-            Debug.WriteLine("a");
             var lv = sender as ListView;
             var c = lv.Items as ItemCollection;
-            foreach (ListViewItem li in c)
+            foreach (Extension li in c)
             {
-                var ext = li.Content as Extension;
-                li.IsSelected = ext.Selected;
+                //Debug.WriteLine(li.Selected);
+               // li.Selected = !li.Selected;
             }
         }
 

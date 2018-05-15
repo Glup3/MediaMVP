@@ -48,7 +48,7 @@ namespace MediaMVP
 
         private void CreatePlaylist(object sender, RoutedEventArgs e)
         {
-            media.Sources.Add(PName.Text,files);
+            media.Sources.Add(PName.Text.TrimEnd().TrimStart(), files);
             var o = (MainWindow)Owner;
             o.Sources.SelectedIndex = o.Sources.Items.Count - 1;
             this.Close();

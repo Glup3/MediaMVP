@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
         <Label>Choose a Name</Label>
-        <TextBox Name="PName"></TextBox>
+        <TextBox MaxLength="12" Name="PName"></TextBox>
         <Button Click="OpenFileDialog">Choose Files</Button>
             <ListView Name="FileList">
                 <ListView.ItemTemplate>

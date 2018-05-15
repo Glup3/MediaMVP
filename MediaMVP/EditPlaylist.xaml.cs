@@ -23,13 +23,16 @@ namespace MediaMVP
     {
         MediaLoader media;
         KeyValuePair<String, ObservableCollection<Media>> files;
+        ObservableCollection<Media> copy;
         public EditPlaylist(object media, object files)
         {
             this.media = (MediaLoader)media;
             this.files = (KeyValuePair<String, ObservableCollection<Media>>)files;
+            copy = new ObservableCollection<Media>(this.files.Value);
             this.DataContext = media;
             InitializeComponent();
-            FileList.ItemsSource = this.files.Value;
+            FileList.ItemsSource = this.copy;
+            Name.Content = this.files.Key;
             PName.Text = this.files.Key;
         }
 
@@ -42,13 +45,19 @@ namespace MediaMVP
                 foreach (String file in openFileDialog.FileNames)
                 {
                     Media m = new Media(file);
-                   // if (!files.Contains(m)) files.Add(m);
+                    if (!copy.Contains(m)) copy.Add(m);
                 }
         }
 
         private void CreatePlaylist(object sender, RoutedEventArgs e)
         {
-           // media.Sources.Add(PName.Text, files);
+            if (!PName.Text.Equals(Name.Content))
+            {
+                media.Sources.Remove(Name.Content as string);
+            }
+            string n = PName.Text.TrimEnd().TrimStart();
+            media.Sources.Remove(n);
+            media.Sources[n] = copy;
             var o = (MainWindow)Owner;
             o.Sources.SelectedIndex = o.Sources.Items.Count - 1;
             this.Close();
@@ -62,7 +71,7 @@ namespace MediaMVP
         private void RemoveMedia(object sender, MouseButtonEventArgs e)
         {
             var i = sender as System.Windows.Controls.ListViewItem;
-            files.Value.Remove(i.Content as Media);
+            copy.Remove(i.Content as Media);
         }
     }
 }

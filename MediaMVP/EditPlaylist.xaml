@@ -18,7 +18,8 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
         <Label>Choose a Name</Label>
-        <TextBox Name="PName"></TextBox>
+        <Label Visibility="Collapsed" Name="Name"></Label>
+        <TextBox MaxLength="12" Name="PName"></TextBox>
         <Button Click="OpenFileDialog">Choose Files</Button>
             <ListView Name="FileList">
                 <ListView.ItemTemplate>
@@ -33,13 +34,14 @@
                 </ListView.ItemContainerStyle>
             </ListView>
         </StackPanel>
-        <Label Visibility="{Binding ElementName=Create, Path=IsEnabled, Converter={StaticResource Vis}}" Grid.Row="1" Foreground="Red">Playlist-Name empty or already exists</Label>
-        <Button Click="CreatePlaylist" Name="Create" Grid.Row="2" Content="Create">
+        <Label Visibility="{Binding ElementName=Edit, Path=IsEnabled, Converter={StaticResource Vis}}" Grid.Row="1" Foreground="Red">Playlist-Name empty or already exists</Label>
+        <Button Click="CreatePlaylist" Name="Edit" Grid.Row="2" Content="Edit">
             <Button.IsEnabled>
                 <MultiBinding Converter="{StaticResource IsValid}">
                     <MultiBinding.Bindings>
                         <Binding ElementName="PName" Path="Text"></Binding>
                         <Binding ElementName="Grid"></Binding>
+                        <Binding ElementName="Name" Path="Content"></Binding>
                     </MultiBinding.Bindings>
                 </MultiBinding>
             </Button.IsEnabled>
