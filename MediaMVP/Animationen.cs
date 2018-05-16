@@ -15,7 +15,7 @@ namespace MediaMVP
         private Storyboard story;
         private DoubleAnimation doublani;
         private DispatcherTimer inactivity;
-        /*
+        /*  
         * Erstellt eine Animation
         * createStoryboard(Name, "Path", from, to, dauer in milisekunden, verspätung in milisekunden);
         * zB:

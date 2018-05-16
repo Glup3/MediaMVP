@@ -7,7 +7,7 @@
         xmlns:ax="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:MediaMVP"
         mc:Ignorable="d"
-        Title="MediaMVP" Height="450" Width="800" KeyDown="Window_KeyDown" MouseMove="Window_MouseMove">
+        Title="MediaMVP" Height="500" Width="800" KeyDown="Window_KeyDown" MouseMove="Window_MouseMove">
     <!--
     <Window.Resources>
         <local:MediaLoader x:Key="Data"/>
@@ -16,6 +16,7 @@
     <Window.DataContext>
         <local:MediaLoader/>
     </Window.DataContext>-->
+    
     <Grid>
         <!-- Groesseneinstellungen -->
         <Grid.RowDefinitions>
@@ -46,12 +47,12 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        
+
         <!-- Main Content -->
         <dock:DockingManager Grid.Row="1">
             <dock:LayoutRoot>
-                <dock:LayoutPanel>
-                    
+
+                <dock:LayoutPanel >
                     <!-- Playlist links-->
                     <dock:LayoutAnchorablePaneGroup Orientation="Vertical"
                                                     DockWidth="0.22*" >
@@ -87,16 +88,51 @@
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
                     </dock:LayoutAnchorablePaneGroup>
+
+                    <dock:LayoutAnchorablePaneGroup Orientation="Vertical">
+                        <!-- Mediaplayer in der Mitte -->
+                        <dock:LayoutAnchorablePane DockHeight="6*" CanRepositionItems="True">
+                            <dock:LayoutAnchorable Title="Mediaplayer">
+                                <MediaElement Source="../../static files/intro.mp4"                                               
+                                              Stretch="Fill"
+                                              Name="BestPlayer"
+                                              LoadedBehavior="Manual"
+                                              UnloadedBehavior="Stop"
+                                              Volume="{Binding ElementName=VolumeSlider, Path=Value}"
+                                              />
+                                <!--Source="{Binding CMedia.MPath}"-->
+                            </dock:LayoutAnchorable>
+
+
+                        </dock:LayoutAnchorablePane>
+
+                        <dock:LayoutAnchorablePane DockHeight="1.5*">
+                            <dock:LayoutAnchorable Title="Dauer">
+                                <!--Dauer vom Mediaplayers-->
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
+                        
+                        <dock:LayoutAnchorablePane DockHeight="*">
+                            <dock:LayoutAnchorable Title="Controls">
+                                <WrapPanel x:Name="wrapPanel" local:MarginSetter.Margin="2">
+                                    <Button Content="Play" Click="Play_Click"/>
+                                    <Button Content="Pause" Click="Pause_Click" />
+                                    <Button Content="Stop" Click="Stop_Click" />
+                                    <Button Content="Test" Click="Button_Click" />
+
+                                    <Slider Width="100" Name="VolumeSlider" Maximum="1" Value="1"/>
+
+                                </WrapPanel>
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
+                        
+                        
+                    </dock:LayoutAnchorablePaneGroup>
                     
-                    <!-- Mediaplayer in der Mitte -->
-                    <dock:LayoutAnchorablePane>
-                        <dock:LayoutAnchorable Title="Mediaplayer">
-                            <MediaElement Source="{Binding CMedia.MPath}"
-                                          Stretch="Fill"/>
-                        </dock:LayoutAnchorable>
-                    </dock:LayoutAnchorablePane>
+
                 </dock:LayoutPanel>
-            </dock:LayoutRoot>    
+
+            </dock:LayoutRoot>
         </dock:DockingManager>
     </Grid>
 </Window>

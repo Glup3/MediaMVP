@@ -28,12 +28,15 @@ namespace MediaMVP
         MediaLoader media;
         public ExtensionDialog extdia;
 
+
         public MainWindow()
         {
             inactivity = new DispatcherTimer();
             media = new MediaLoader();
             DataContext = media;
             InitializeComponent();
+            Console.WriteLine(BestPlayer.LoadedBehavior);
+
         }
 
         private void MenuItem_Close(object sender, RoutedEventArgs e)
@@ -129,6 +132,31 @@ namespace MediaMVP
             {
                 extdia.Focus();
             }
+        }
+
+        private void Play_Click(object sender, RoutedEventArgs e)
+        {
+            BestPlayer.Play();
+        }
+
+        private void Stop_Click(object sender, RoutedEventArgs e)
+        {
+            BestPlayer.Stop();
+        }
+
+        private void Pause_Click(object sender, RoutedEventArgs e)
+        {
+            BestPlayer.Pause();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine(BestPlayer.Position);
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            BestPlayer.Volume = VolumeSlider.Value;
         }
     }
 }

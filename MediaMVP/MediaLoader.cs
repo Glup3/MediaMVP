@@ -26,7 +26,7 @@ namespace MediaMVP
             LoadExtensions();
             sources = new ObservableDictionary<string,ObservableCollection<Media>>();
             sources.Add("Path", new ObservableCollection<Media>());
-            sources.Add("Playlist 1", GetFiles("C:/Users/Granit/Desktop/KONFIG"));
+            //sources.Add("Playlist 1", GetFiles("C:/Users/Granit/Desktop/KONFIG"));
         }
 
         private ObservableDictionary<string,ObservableCollection<Media>> sources;
