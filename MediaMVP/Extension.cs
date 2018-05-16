@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -17,7 +18,7 @@ namespace MediaMVP
             get { return name; }
             set { name = value;  OnPropertyChanged(); }
         }
-        public bool selected = true;
+        public bool selected;
         public bool Selected
         {
             get { return selected; }
@@ -27,6 +28,7 @@ namespace MediaMVP
         public Extension(String name)
         {
             this.Name = name;
+            Selected = true;
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

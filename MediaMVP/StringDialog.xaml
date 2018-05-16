@@ -9,7 +9,7 @@
     <Grid>
         <StackPanel>
             <TextBlock Text="Enter Extension. DONT FORGET THE .EXT!!!" />
-            <TextBox x:Name="ResponseTextBox" />
+            <TextBox x:Name="ResponseTextBox" KeyDown="ResponseTextBox_KeyDown"/>
             <Button Content="OK" Click="OKButton_Click" />
         </StackPanel>
     </Grid>

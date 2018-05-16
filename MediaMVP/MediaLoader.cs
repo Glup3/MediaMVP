@@ -14,20 +14,56 @@ namespace MediaMVP
 {
     class MediaLoader : INotifyPropertyChanged
     {
+        public String path;
+        public ASCIIEncoding enc = new System.Text.ASCIIEncoding();
         public MediaLoader()
         {
             //GetMedia("");
             // Media = GetMediaENum("C:/Users/Granit/Desktop/KONFIG", new List<string> { ".mp3",".mp4"});
-            FreeExtensions = new ObservableCollection<Extension>();
+            /*FreeExtensions = new ObservableCollection<Extension>();
             UsedExtensions = new ObservableCollection<Extension>();
             UsedExtensions.Add(new Extension(".mp3"));
+            UsedExtensions.Add(new Extension(".mp4"));*/
+            usedextensions = new ObservableCollection<Extension>() { };
+            extensions = new ObservableCollection<Extension>() { };
+            UsedExtensions.Add(new Extension(".mp3"));
             UsedExtensions.Add(new Extension(".mp4"));
-            extensions = new ObservableCollection<Extension>();
-            LoadExtensions();
+            UsedExtensions.Add(new Extension(".asf"));
+            UsedExtensions.Add(new Extension(".wma"));
+            UsedExtensions.Add(new Extension(".wmv"));
+            UsedExtensions.Add(new Extension(".aac"));
+            UsedExtensions.Add(new Extension(".3gp"));
+            UsedExtensions.Add(new Extension(".3g2"));
+            UsedExtensions.Add(new Extension(".m4a"));
+            UsedExtensions.Add(new Extension(".m4b"));
+            UsedExtensions.Add(new Extension(".mpg"));
+            UsedExtensions.Add(new Extension(".mpeg"));
+            UsedExtensions.Add(new Extension(".divx"));
+            UsedExtensions.Add(new Extension(".xvid"));
+            UsedExtensions.Add(new Extension(".h264"));
+            String se = "";
+            String fe = "All Media Files (";
+            String te = "";
+            foreach (Extension ext in UsedExtensions)
+            {
+                te += "*" + ext.Name+";";
+                se += (ext.Name.Remove(0, 1)) + " (*" + ext.Name + ")|" + "*" + ext.Name + "|";
+            }
+            int c = te.Count();
+            te = te.Remove(c - 1, 1);
+            fe += te + ")|";
+            c = se.Count();
+            extString = fe+te+"|"+se.Remove(c - 1, 1);
             sources = new ObservableDictionary<string,ObservableCollection<Media>>();
-            sources.Add("Path", new ObservableCollection<Media>());
-            //sources.Add("Playlist 1", GetFiles("C:/Users/Granit/Desktop/KONFIG"));
+            path = "../../Settings/Settings.config";
+            String[] settings = File.ReadAllLines(path);
+            String df = settings.Length>0 ? settings[0]:null;
+            ObservableCollection<Media> o =null;
+            if (df != null) o = GetMediaENum(df,usedextensions);
+            sources.Add("Path", o ?? new ObservableCollection<Media>());
         }
+
+        public static String extString;
 
         private ObservableDictionary<string,ObservableCollection<Media>> sources;
         public ObservableDictionary<string,ObservableCollection<Media>> Sources
@@ -61,7 +97,7 @@ namespace MediaMVP
         public ObservableCollection<Media> Media
         {
             get { return media; }
-            set { media = GetMedia(value,extensions); OnPropertyChanged(); }
+            set { media = GetMedia(value,UsedExtensions); OnPropertyChanged(); }
         }
 
         private Media cmedia;
@@ -78,14 +114,22 @@ namespace MediaMVP
             /*var myFiles = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
                  .Where(s => ext.Contains(Path.GetExtension(s)));
             */ObservableCollection<Media> res = new ObservableCollection<Media>(){ };
-            foreach (Extension fileExtension in ext)
+            try
             {
-                foreach (String file in Directory.EnumerateFiles(path,"*.*", SearchOption.AllDirectories))
+
+                foreach (Extension fileExtension in ext)
                 {
-                    if(fileExtension.Name.Contains(Path.GetExtension(file)))res.Add(new Media(file));
+                    foreach (String file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories))
+                    {
+                        if (fileExtension.Name.Contains(Path.GetExtension(file))) res.Add(new Media(file));
+                    }
                 }
+                return res;
             }
-            return res;
+            catch (Exception e)
+            {
+                return res;
+            }
         }
 
         public static ObservableCollection<Media> GetFiles(String path)
@@ -108,6 +152,7 @@ namespace MediaMVP
             ObservableCollection<Media> res = new ObservableCollection<Media>() { };
             foreach (Extension fileExtension in ext)
             {
+                if(fileExtension.Selected)
                 foreach (Media m in files)
                 {
                     if (fileExtension.Name.Contains(Path.GetExtension(m.MPath))) res.Add(m);
@@ -127,9 +172,9 @@ namespace MediaMVP
 
         public void ReloadMedia(ObservableCollection<Media> m)
         {
-            LoadExtensions();
             Media = m;
         }
+
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

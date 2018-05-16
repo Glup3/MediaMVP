@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,15 +30,18 @@ namespace MediaMVP
         MediaLoader media;
         public ExtensionDialog extdia;
 
-
         public MainWindow()
         {
             inactivity = new DispatcherTimer();
             media = new MediaLoader();
             DataContext = media;
             InitializeComponent();
-            Console.WriteLine(BestPlayer.LoadedBehavior);
-
+            var c = Sources.Items as ItemCollection;
+            foreach (Extension li in c)
+            {
+                //Debug.WriteLine(li.Selected);
+                //li.Selected = !li.Selected;
+            }
         }
 
         private void MenuItem_Close(object sender, RoutedEventArgs e)
@@ -108,19 +113,21 @@ namespace MediaMVP
                     int idx = Sources.SelectedIndex;
                     
                     media.Sources.Remove("Path");
-                    media.Sources["Path"] = MediaLoader.GetFiles(path);
+                    media.Sources["Path"] = MediaLoader.GetMediaENum(path,media.UsedExtensions);
                     if (idx!= Sources.SelectedIndex)
                     {
-                        Debug.WriteLine("a");
+                       // Debug.WriteLine("a");
                         Sources.SelectedIndex = media.Sources.Count-1;
                         media.Media = media.Sources["Path"];
                         media.CMedia = null;
                     }
+                    File.WriteAllText(media.path,path);
                 }
             }
         }
 
-        private void OpenExtDialog(object sender, RoutedEventArgs e)
+
+            private void OpenExtDialog(object sender, RoutedEventArgs e)
         {
             if (extdia == null)
             {
@@ -134,29 +141,47 @@ namespace MediaMVP
             }
         }
 
-        private void Play_Click(object sender, RoutedEventArgs e)
+        private void AddPlaylist(object sender, RoutedEventArgs e)
         {
-            BestPlayer.Play();
+            PlaylistDialog pld = new PlaylistDialog(media);
+            pld.Owner = this;
+            pld.Show();
         }
 
-        private void Stop_Click(object sender, RoutedEventArgs e)
+        private void ActivateExt(object sender, MouseButtonEventArgs e)
         {
-            BestPlayer.Stop();
+            var s = sender as ListViewItem;
+            var c = s.Content as Extension;
+            c.Selected = !c.Selected;
+            Debug.WriteLine(c.Name+" "+c.Selected);
+            media.ReloadMedia(Sources.SelectedValue as ObservableCollection<Media>);
+            //c.Selected = !c.Selected;
         }
 
-        private void Pause_Click(object sender, RoutedEventArgs e)
+        private void RefreshExt(object sender, MouseWheelEventArgs e)
         {
-            BestPlayer.Pause();
+            var lv = sender as ListView;
+            var c = lv.Items as ItemCollection;
+            foreach (Extension li in c)
+            {
+                //Debug.WriteLine(li.Selected);
+               // li.Selected = !li.Selected;
+            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void RemovePlaylist(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(BestPlayer.Position);
+            var idx = Sources.SelectedIndex;
+            var i = (KeyValuePair<String, ObservableCollection<Media>>)Sources.SelectedItem;
+            media.Sources.Remove(i.Key);
+            Sources.SelectedIndex = idx>0 ? idx-1:0;
         }
 
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void EditPlaylist(object sender, RoutedEventArgs e)
         {
-            BestPlayer.Volume = VolumeSlider.Value;
+            EditPlaylist ep = new EditPlaylist(media,Sources.SelectedItem);
+            ep.Owner = this;
+            ep.Show();
         }
     }
 }

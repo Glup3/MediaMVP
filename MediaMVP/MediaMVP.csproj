@@ -73,12 +73,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EditPlaylist.xaml.cs">
+      <DependentUpon>EditPlaylist.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Extension.cs" />
     <Compile Include="IsPlaylistConverter.cs" />
+    <Compile Include="IsValidPName.cs" />
     <Compile Include="MarginSetter.cs" />
+    <Compile Include="PlaylistDialog.xaml.cs">
+      <DependentUpon>PlaylistDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StringDialog.xaml.cs">
       <DependentUpon>StringDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VisibilityConverter.cs" />
+    <Page Include="EditPlaylist.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ExtensionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -99,6 +111,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PlaylistDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StringDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -130,6 +146,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Settings\Settings.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

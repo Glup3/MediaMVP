@@ -48,5 +48,13 @@ namespace MediaMVP
             this.MPath = path;
             MName = Path.GetFileName(path);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Media)) return false;
+            var item = obj as Media;
+
+            return MPath.Equals(item.MPath);
+        }
     }
 }

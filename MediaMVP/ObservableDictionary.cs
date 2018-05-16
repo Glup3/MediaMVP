@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -203,7 +204,7 @@ namespace MediaMVP
             TValue item;
             if (Dictionary.TryGetValue(key, out item))
             {
-                if (add) throw new ArgumentException("An item with the same key has already been added.");
+                if (add) return ;
                 if (Equals(item, value)) return;
                 Dictionary[key] = value;
 
