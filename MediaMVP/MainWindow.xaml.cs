@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -24,24 +25,24 @@ namespace MediaMVP
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool playing = true;
         private bool first;
         private bool wait;
         DispatcherTimer inactivity;
+        DispatcherTimer player;
         MediaLoader media;
         public ExtensionDialog extdia;
 
         public MainWindow()
         {
             inactivity = new DispatcherTimer();
+            player = new DispatcherTimer();
+            player.Tick += new EventHandler(play_time);
+            player.Interval = new TimeSpan(0,0,0,0,166);
             media = new MediaLoader();
             DataContext = media;
             InitializeComponent();
-            var c = Sources.Items as ItemCollection;
-            foreach (Extension li in c)
-            {
-                //Debug.WriteLine(li.Selected);
-                //li.Selected = !li.Selected;
-            }
+            player.Start();
         }
 
         private void MenuItem_Close(object sender, RoutedEventArgs e)
@@ -78,7 +79,19 @@ namespace MediaMVP
 
         }
 
-        private void inactivity_Tick(object sender, EventArgs e)
+        private void play_time(object sender, EventArgs e)
+        {
+            if (Player.HasAudio || Player.HasVideo)
+            {
+                String ts = Player.Position.ToString();
+                int start = ts.LastIndexOf(".");
+                if (start > -1) PlayTime.Content = ts.Remove(start, ts.Length - start);
+                else PlayTime.Content = ts;
+                if(playing)TimelineSlider.Value = Player.Position.TotalMilliseconds;
+            }
+            else PlayTime.Content = "";
+        }
+            private void inactivity_Tick(object sender, EventArgs e)
         {
             // Hier kommt der Code für FadeOut hin, wenn die Maus in Fullscreen nicht mehr bewegt wird.
             Cursor = Cursors.None;
@@ -107,7 +120,6 @@ namespace MediaMVP
             {
               System.Windows.Forms.DialogResult result = dialog.ShowDialog();
               String path = dialog.SelectedPath;
-                //!String.IsNullOrEmpty(path)
                 if (result.ToString().Equals("OK"))
                 {
                     int idx = Sources.SelectedIndex;
@@ -116,7 +128,6 @@ namespace MediaMVP
                     media.Sources["Path"] = MediaLoader.GetMediaENum(path,media.UsedExtensions);
                     if (idx!= Sources.SelectedIndex)
                     {
-                       // Debug.WriteLine("a");
                         Sources.SelectedIndex = media.Sources.Count-1;
                         media.Media = media.Sources["Path"];
                         media.CMedia = null;
@@ -125,7 +136,6 @@ namespace MediaMVP
                 }
             }
         }
-
 
             private void OpenExtDialog(object sender, RoutedEventArgs e)
         {
@@ -153,20 +163,7 @@ namespace MediaMVP
             var s = sender as ListViewItem;
             var c = s.Content as Extension;
             c.Selected = !c.Selected;
-            Debug.WriteLine(c.Name+" "+c.Selected);
             media.ReloadMedia(Sources.SelectedValue as ObservableCollection<Media>);
-            //c.Selected = !c.Selected;
-        }
-
-        private void RefreshExt(object sender, MouseWheelEventArgs e)
-        {
-            var lv = sender as ListView;
-            var c = lv.Items as ItemCollection;
-            foreach (Extension li in c)
-            {
-                //Debug.WriteLine(li.Selected);
-               // li.Selected = !li.Selected;
-            }
         }
 
         private void RemovePlaylist(object sender, RoutedEventArgs e)
@@ -183,5 +180,91 @@ namespace MediaMVP
             ep.Owner = this;
             ep.Show();
         }
+        void OnMouseDownPlayMedia(object sender, RoutedEventArgs args)
+        {
+            if (playing)
+            {
+                playing = false;
+                Player.Pause();
+            }
+            else
+            {
+                playing = true;
+                Player.Play();
+            }
+            if (TimelineSlider.Value == TimelineSlider.Maximum)
+                Player.Position = new TimeSpan(0, 0, 0, 0, 0);
+            // InitializePropertyValues();
+
+        }
+
+        private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> args)
+        {
+           // Player.Volume = (double)volumeSlider.Value;
+        }
+
+        private void ChangeMediaSpeedRatio(object sender, RoutedPropertyChangedEventArgs<double> args)
+        {
+           // Player.SpeedRatio = (double)speedRatioSlider.Value;
+        }
+
+        private void Element_MediaOpened(object sender, EventArgs e)
+        {
+            TimelineSlider.Maximum = Player.NaturalDuration.TimeSpan.TotalMilliseconds;
+            TimelineSlider.Value = Player.Position.TotalMilliseconds;
+            Player.Play();
+        }
+
+       private void Element_MediaEnded(object sender, EventArgs e)
+        {
+            playing = false;
+            Medias.SelectedIndex += 1;
+        }
+
+
+        private void DragStarted(object sender, DragStartedEventArgs args)
+        {
+            Player.Pause();
+            playing = false;
+        }
+
+        private void DragCompleted(object sender, DragCompletedEventArgs args)
+        {
+            playing = true;
+            int SliderValue = (int)TimelineSlider.Value;
+           TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
+            Player.Position = ts;
+             Player.Play();
+        }
+
+        void InitializePropertyValues()
+        {
+            //Player.Volume = (double)volumeSlider.Value;
+            //Player.SpeedRatio = (double)speedRatioSlider.Value;
+        }
+
+        private void Medias_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Player.Play();
+            playing = true;
+            TimelineSlider.Value = 0;
+        }
+
+        private void Sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Medias.SelectedIndex = 0;
+            TimelineSlider.Value = 0;
+            Player.Stop();
+            playing = false;
+        }
+
+        private void TimelineSlider_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("ss");
+            int SliderValue = (int)TimelineSlider.Value;
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
+            Player.Position = ts;
+        }
     }
+
 }

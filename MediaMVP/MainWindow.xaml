@@ -8,7 +8,6 @@
         xmlns:local="clr-namespace:MediaMVP"
         mc:Ignorable="d"
         Title="MediaMVP" Height="500" Width="800" KeyDown="Window_KeyDown" MouseMove="Window_MouseMove">
-    <!--
     <Window.Resources>
         <!--<local:MediaLoader x:Key="Data"/>-->
         <local:IsPlaylistConverter x:Key="PlayConv"/>
@@ -123,7 +122,7 @@
                             <dock:LayoutAnchorable Title="Source"
                                                    CanHide="False"
                                                    CanClose="False">
-                                <ComboBox SelectedIndex="0" Name="Sources" ItemsSource="{Binding Sources}" SelectedValuePath="Value" SelectedValue="{Binding Media, Mode=OneWayToSource}" DisplayMemberPath="Key"
+                                <ComboBox SelectionChanged="Sources_SelectionChanged" SelectedIndex="0" Name="Sources" ItemsSource="{Binding Sources}" SelectedValuePath="Value" SelectedValue="{Binding Media, Mode=OneWayToSource}" DisplayMemberPath="Key"
                                     Height="20"/>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
@@ -173,7 +172,7 @@
                         <dock:LayoutAnchorablePane DockWidth="1*">
                             <dock:LayoutAnchorable Title="Media" 
                                                    CanClose="False">
-                                <ListBox SelectedItem="{Binding CMedia}" ItemsSource="{Binding Media}">
+                                <ListBox Name="Medias" SelectedItem="{Binding CMedia}" ItemsSource="{Binding Media}" SelectionChanged="Medias_SelectionChanged">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Label Content="{Binding MName}"></Label>
@@ -188,14 +187,13 @@
                         <!-- Mediaplayer in der Mitte -->
                         <dock:LayoutAnchorablePane DockHeight="6*" CanRepositionItems="True">
                             <dock:LayoutAnchorable Title="Mediaplayer">
-                                <MediaElement Source="../../static files/intro.mp4"                                               
+                                <MediaElement Source="{Binding CMedia.MPath}"                                 
                                               Stretch="Fill"
-                                              Name="BestPlayer"
+                                              Name="Player"
                                               LoadedBehavior="Manual"
                                               UnloadedBehavior="Stop"
                                               Volume="{Binding ElementName=VolumeSlider, Path=Value}"
-                                              />
-                                <!--Source="{Binding CMedia.MPath}"-->
+                                              MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
                             </dock:LayoutAnchorable>
 
 
@@ -203,21 +201,19 @@
 
                         <dock:LayoutAnchorablePane DockHeight="1.5*">
                             <dock:LayoutAnchorable Title="Dauer">
-                                <!--Dauer vom Mediaplayers-->
+                                <WrapPanel>
+                                    
+                                </WrapPanel>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
                         
                         <dock:LayoutAnchorablePane DockHeight="*">
                             <dock:LayoutAnchorable Title="Controls">
-                                <WrapPanel x:Name="wrapPanel" local:MarginSetter.Margin="2">
-                                    <Button Content="Play" Click="Play_Click"/>
-                                    <Button Content="Pause" Click="Pause_Click" />
-                                    <Button Content="Stop" Click="Stop_Click" />
-                                    <Button Content="Test" Click="Button_Click" />
-
-                                    <Slider Width="100" Name="VolumeSlider" Maximum="1" Value="1"/>
-
-                                </WrapPanel>
+                                <StackPanel Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
+                                    <Button Content=">" Click="OnMouseDownPlayMedia"/>
+                                    <Slider Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
+                                    <Label Name="PlayTime"></Label>
+                                </StackPanel>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
                         
