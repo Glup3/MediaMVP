@@ -79,7 +79,7 @@
     <Window.DataContext>
         <local:MediaLoader/>
     </Window.DataContext>-->
-    
+
     <Grid>
         <!-- Groesseneinstellungen -->
         <Grid.RowDefinitions>
@@ -89,7 +89,7 @@
 
         <!-- Menubar -->
         <DockPanel>
-            <Menu DockPanel.Dock="Top">
+            <Menu Name="Menu" DockPanel.Dock="Top">
                 <Menu.Style>
                     <Style>
                         <Setter Property="MenuItem.FontSize" Value="14"/>
@@ -111,7 +111,7 @@
         </DockPanel>
 
         <!-- Main Content -->
-        <dock:DockingManager Grid.Row="1">
+        <dock:DockingManager Name="dockingManager" Grid.Row="1" Margin="5,2,5,2">
             <dock:LayoutRoot>
                 <dock:LayoutPanel>
 
@@ -120,6 +120,7 @@
                                                     DockWidth="0.6*" >
                         <dock:LayoutAnchorablePane DockHeight="0.2*">
                             <dock:LayoutAnchorable Title="Source"
+                                                   x:Name="Source"
                                                    CanHide="False"
                                                    CanClose="False">
                                 <ComboBox SelectionChanged="Sources_SelectionChanged" SelectedIndex="0" Name="Sources" ItemsSource="{Binding Sources}" SelectedValuePath="Value" SelectedValue="{Binding Media, Mode=OneWayToSource}" DisplayMemberPath="Key"
@@ -128,6 +129,7 @@
                         </dock:LayoutAnchorablePane>
                         <dock:LayoutAnchorablePane DockHeight="0.2*">
                             <dock:LayoutAnchorable Title="Manage Playlists"
+                                                   x:Name="Manage"
                                                    CanHide="False"
                                                    CanClose="False">
                                 <StackPanel Orientation="Horizontal" local:MarginSetter.Margin="2">
@@ -139,6 +141,7 @@
                         </dock:LayoutAnchorablePane>
                         <dock:LayoutAnchorablePane>
                             <dock:LayoutAnchorable Title="Filter Extensions"
+                                                   x:Name="Filter"
                                                    CanHide="False"
                                                    CanClose="False">
                                 <ListView Name="Extensions" ItemsSource="{Binding UsedExtensions}" SelectionMode="Multiple" ItemContainerStyle="{DynamicResource ListViewItemStyle1}">
@@ -152,8 +155,8 @@
                                     </ListView.ItemTemplate>
                                     <ListView.Resources>
                                         <Style TargetType="ListViewItem">
-                                            
-                                            
+
+
                                             <!--     <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="Background" Value="DarkGray"></Setter>
@@ -170,7 +173,8 @@
                     </dock:LayoutAnchorablePaneGroup>
                     <dock:LayoutAnchorablePaneGroup>
                         <dock:LayoutAnchorablePane DockWidth="1*">
-                            <dock:LayoutAnchorable Title="Media" 
+                            <dock:LayoutAnchorable Title="Media"
+                                                   x:Name="Media"
                                                    CanClose="False">
                                 <ListBox Name="Medias" SelectedItem="{Binding CMedia}" ItemsSource="{Binding Media}" SelectionChanged="Medias_SelectionChanged">
                                     <ListBox.ItemTemplate>
@@ -186,40 +190,42 @@
                     <dock:LayoutAnchorablePaneGroup Orientation="Vertical">
                         <!-- Mediaplayer in der Mitte -->
                         <dock:LayoutAnchorablePane DockHeight="6*" CanRepositionItems="True">
-                            <dock:LayoutAnchorable Title="Mediaplayer">
-                                <MediaElement Source="{Binding CMedia.MPath}"                                 
+                            <dock:LayoutAnchorable Title="Mediaplayer"
+                                                   x:Name="Mediaplayer">
+                                <Canvas Name="canvas">
+                                    <MediaElement Source="{Binding CMedia.MPath}"                                 
                                               Stretch="Fill"
                                               Name="Player"
+                                                      Width="{Binding ElementName=canvas, Path=Width}"
+                                                      Height="{Binding ElementName=canvas, Path=Height}"
                                               LoadedBehavior="Manual"
                                               UnloadedBehavior="Stop"
                                               Volume="{Binding ElementName=VolumeSlider, Path=Value}"
                                               MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
-                            </dock:LayoutAnchorable>
 
-
-                        </dock:LayoutAnchorablePane>
-
-                        <dock:LayoutAnchorablePane DockHeight="1.5*">
-                            <dock:LayoutAnchorable Title="Dauer">
-                                <WrapPanel>
-                                    
-                                </WrapPanel>
-                            </dock:LayoutAnchorable>
-                        </dock:LayoutAnchorablePane>
-                        
-                        <dock:LayoutAnchorablePane DockHeight="*">
-                            <dock:LayoutAnchorable Title="Controls">
-                                <StackPanel Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
+                                    <StackPanel Canvas.Bottom="0" Width="{Binding ActualWidth, ElementName=canvas, Mode=OneWay}">
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
+                                            <Button Height="20" Name="PastMedia" Content="/"/>
+                                            <!--Click="OnMouseDownPlayPastMedia"/>-->
+                                            <Button Height="20" Name="PauseMedia" Content="=" Click="OnMouseDownPlayMedia"/>
+                                            <Button Height="20" Name="NextMedia" Content="\"/> 
+                                            <!--Click="OnMouseDownPlayNextMedia"/>-->
+                                            <Slider Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
+                                            <Label Name="PlayTime"></Label>
+                                            <!--<StackPanel Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
                                     <Button Content=">" Click="OnMouseDownPlayMedia"/>
                                     <Slider Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
                                     <Label Name="PlayTime"></Label>
-                                </StackPanel>
+                                </StackPanel>-->
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Canvas>
                             </dock:LayoutAnchorable>
+
+
                         </dock:LayoutAnchorablePane>
-                        
-                        
                     </dock:LayoutAnchorablePaneGroup>
-                    
+
 
                 </dock:LayoutPanel>
             </dock:LayoutRoot>

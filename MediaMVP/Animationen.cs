@@ -14,7 +14,7 @@ namespace MediaMVP
     {
         private Storyboard story;
         private DoubleAnimation doublani;
-        private DispatcherTimer inactivity;
+        private int duration = 1000;
         /*  
         * Erstellt eine Animation
         * createStoryboard(Name, "Path", from, to, dauer in milisekunden, verspätung in milisekunden);
@@ -34,60 +34,84 @@ namespace MediaMVP
             story.Children.Add(doublani);
             story.Begin();
         }
-
-        public void fullscreenModus(List<Control> top, List<Control> right, List<Control> bottom, List<Control> left)
+        public void fullscreenModus(List<Control> left, List<Control> top, List<Control> right, List<Control> bottom)
         {
-            foreach (Control c in top)
+            if (left != null)
             {
-                //createStoryboard(c, "Height", 50, 0, 1000, 0);
-                //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
-                createStoryboard(c, "Opacity", 1, 0, 1000, 0);
+                foreach (Control c in left)
+                {
+                    //createStoryboard(c, "Height", 50, 0, 1000, 0);
+                    //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
+                    createStoryboard(c, "Opacity", 1, 0, duration, 0);
+                }
             }
-            foreach (Control c in right)
+            if (top != null)
             {
-                //createStoryboard(c, "Height", 50, 0, 1000, 0);
-                //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
-                createStoryboard(c, "Opacity", 1, 0, 1000, 0);
+                foreach (Control c in top)
+                {
+                    //createStoryboard(c, "Height", 50, 0, 1000, 0);
+                    //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
+                    createStoryboard(c, "Opacity", 1, 0, duration, 0);
+                }
             }
-            foreach (Control c in bottom)
+            if (right != null)
             {
-                //createStoryboard(c, "Height", 50, 0, 1000, 0);
-                //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
-                createStoryboard(c, "Opacity", 1, 0, 1000, 0);
+                foreach (Control c in right)
+                {
+                    //createStoryboard(c, "Height", 50, 0, 1000, 0);
+                    //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
+                    createStoryboard(c, "Opacity", 1, 0, duration, 0);
+                }
             }
-            foreach (Control c in left)
+            if (bottom != null)
             {
-                //createStoryboard(c, "Height", 50, 0, 1000, 0);
-                //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
-                createStoryboard(c, "Opacity", 1, 0, 1000, 0);
+                foreach (Control c in bottom)
+                {
+                    //createStoryboard(c, "Height", 50, 0, 1000, 0);
+                    //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
+                    createStoryboard(c, "Opacity", 1, 0, duration, 0);
+                }
             }
         }
-        public void NormalModus(List<Control> top, List<Control> right, List<Control> bottom, List<Control> left)
+        public void NormalModus(List<Control> left, List<Control> top, List<Control> right, List<Control> bottom)
         {
-            foreach (Control c in top)
+            if (left != null)
             {
-                //createStoryboard(c, "Height", 50, 0, 1000, 0);
-                //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
-                createStoryboard(c, "Opacity", 0, 1, 1000, 0);
+                foreach (Control c in left)
+                {
+                    //createStoryboard(c, "Height", 50, 0, 1000, 0);
+                    //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
+                    createStoryboard(c, "Opacity", 0, 1, duration, 0);
+                }
             }
-            foreach (Control c in right)
+            if (top != null)
             {
-                //createStoryboard(c, "Height", 50, 0, 1000, 0);
-                //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
-                createStoryboard(c, "Opacity", 0, 1, 1000, 0);
+                foreach (Control c in top)
+                {
+                    //createStoryboard(c, "Height", 50, 0, 1000, 0);
+                    //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
+                    createStoryboard(c, "Opacity", 0, 1, duration, 0);
+                }
             }
-            foreach (Control c in bottom)
+            if (right != null)
             {
-                //createStoryboard(c, "Height", 50, 0, 1000, 0);
-                //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
-                createStoryboard(c, "Opacity", 0, 1, 1000, 0);
+                foreach (Control c in right)
+                {
+                    //createStoryboard(c, "Height", 50, 0, 1000, 0);
+                    //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
+                    createStoryboard(c, "Opacity", 0, 1, duration, 0);
+                }
             }
-            foreach (Control c in left)
+            if (bottom != null)
             {
-                //createStoryboard(c, "Height", 50, 0, 1000, 0);
-                //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
-                createStoryboard(c, "Opacity", 0, 1, 1000, 0);
+                foreach (Control c in bottom)
+                {
+                    //createStoryboard(c, "Height", 50, 0, 1000, 0);
+                    //createStoryboard(c, "(Canvas.Top)", 150, 200, 1000, 0);
+                    createStoryboard(c, "Opacity", 0, 1, duration, 0);
+                }
             }
+
         }
 
     }

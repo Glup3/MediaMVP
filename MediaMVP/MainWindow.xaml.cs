@@ -28,6 +28,7 @@ namespace MediaMVP
         private bool playing = true;
         private bool first;
         private bool wait;
+        Animationen animationen;
         DispatcherTimer inactivity;
         DispatcherTimer player;
         MediaLoader media;
@@ -36,9 +37,10 @@ namespace MediaMVP
         public MainWindow()
         {
             inactivity = new DispatcherTimer();
+            animationen = new Animationen();
             player = new DispatcherTimer();
             player.Tick += new EventHandler(play_time);
-            player.Interval = new TimeSpan(0,0,0,0,166);
+            player.Interval = new TimeSpan(0, 0, 0, 0, 166);
             media = new MediaLoader();
             DataContext = media;
             InitializeComponent();
@@ -52,19 +54,52 @@ namespace MediaMVP
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            Thickness mag = new Thickness();
             if (e.Key == Key.F11 && !first)
             {
                 first = true;
                 WindowState = WindowState.Maximized;
                 WindowStyle = WindowStyle.None;
-                Cursor = Cursors.None;
+                Menu.Visibility = Visibility.Collapsed;
+                Source.Hide();
+                Manage.Hide();
+                Filter.Hide();
+                Media.Hide();
+                mag.Left = 0;
+                mag.Top = 0;
+                mag.Right = 0;
+                mag.Bottom = 0;
+                dockingManager.Margin = mag;
+                Mediaplayer.Title = "";
+                Mediaplayer.CanAutoHide = false;
+                Mediaplayer.CanClose = false;
+                Mediaplayer.CanFloat = false;
+                Mediaplayer.CanHide = false;
+                TimelineSlider.Width = 500;
             }
-            else if (e.Key == Key.F11 && first)
+            else if ((e.Key == Key.F11 || e.Key == Key.Escape) && first)
             {
                 first = false;
                 WindowState = WindowState.Normal;
                 WindowStyle = WindowStyle.ThreeDBorderWindow;
+                Menu.Visibility = Visibility.Visible;
+                Source.Show();
+                Manage.Show();
+                Filter.Show();
+                Media.Show();
+                mag.Left = 5;
+                mag.Top = 2;
+                mag.Right = 5;
+                mag.Bottom = 2;
+                dockingManager.Margin = mag;
+                Mediaplayer.Title = "Mediaplayer";
+                Mediaplayer.CanAutoHide = true;
+                Mediaplayer.CanClose = true;
+                Mediaplayer.CanFloat = true;
+                Mediaplayer.CanHide = true;
+                TimelineSlider.Width = 100;
                 Cursor = Cursors.Arrow;
+                animationen.NormalModus(null, null, new List<Control> { PauseMedia, TimelineSlider, PlayTime }, null);
             }
         }
 
@@ -74,7 +109,7 @@ namespace MediaMVP
         public void timerforfadeout()
         {
             inactivity.Tick += new EventHandler(inactivity_Tick);
-            inactivity.Interval = new TimeSpan(0, 0, 0, 3, 500);
+            inactivity.Interval = new TimeSpan(0, 0, 0, 1, 500);
             inactivity.Start();
 
         }
@@ -87,15 +122,29 @@ namespace MediaMVP
                 int start = ts.LastIndexOf(".");
                 if (start > -1) PlayTime.Content = ts.Remove(start, ts.Length - start);
                 else PlayTime.Content = ts;
-                if(playing)TimelineSlider.Value = Player.Position.TotalMilliseconds;
+                if (playing) TimelineSlider.Value = Player.Position.TotalMilliseconds;
             }
             else PlayTime.Content = "";
         }
-            private void inactivity_Tick(object sender, EventArgs e)
+        private void inactivity_Tick(object sender, EventArgs e)
         {
+            if (first)
+            {
+                animationen.fullscreenModus(null, null, new List<Control> { PauseMedia, TimelineSlider, PlayTime }, null);
+                animationen.createStoryboard(PastMedia, "Height", 20, 0, 500, 0);
+                animationen.createStoryboard(PauseMedia, "Height", 20, 0, 500, 0);
+                animationen.createStoryboard(NextMedia, "Height", 20, 0, 500, 0);
+                animationen.createStoryboard(TimelineSlider, "Height", 20, 0, 500, 0);
+                animationen.createStoryboard(PlayTime, "Height", 20, 0, 500, 0);
+            }
             // Hier kommt der Code für FadeOut hin, wenn die Maus in Fullscreen nicht mehr bewegt wird.
             Cursor = Cursors.None;
             wait = true;
+            if (!first)
+            {
+                Cursor = Cursors.Arrow;
+                wait = false;
+            }
             inactivity.Stop();
         }
 
@@ -106,42 +155,62 @@ namespace MediaMVP
                 Cursor = Cursors.Arrow;
                 if (wait)
                 {
+                    animationen.NormalModus(null, null, new List<Control> { PauseMedia, TimelineSlider, PlayTime }, null);
+                    animationen.createStoryboard(PastMedia, "Height", 0, 20, 500, 0);
+                    animationen.createStoryboard(PauseMedia, "Height", 0, 20, 500, 0);
+                    animationen.createStoryboard(NextMedia, "Height", 0, 20, 500, 0);
+                    animationen.createStoryboard(TimelineSlider, "Height", 0, 20, 500, 0);
+                    animationen.createStoryboard(PlayTime, "Height", 0, 20, 500, 0);
+
                     // Hier kommt der Code für FadeIn hin, wenn die Maus in Fullscreen bewegt wird.
                     wait = false;
                 }
                 timerforfadeout();
             }
-
+            if (!first && wait)
+            {
+                animationen.createStoryboard(PauseMedia, "Opacity", 0, 1, 250, 0);
+                animationen.createStoryboard(PauseMedia, "Opacity", 0, 1, 250, 0);
+                animationen.createStoryboard(NextMedia, "Opacity", 0, 1, 250, 0);
+                animationen.createStoryboard(TimelineSlider, "Opacity", 0, 1, 250, 0);
+                animationen.createStoryboard(PlayTime, "Opacity", 0, 1, 250, 0);
+                animationen.createStoryboard(PastMedia, "Height", 0, 20, 250, 0);
+                animationen.createStoryboard(PauseMedia, "Height", 0, 20, 250, 0);
+                animationen.createStoryboard(NextMedia, "Height", 0, 20, 250, 0);
+                animationen.createStoryboard(TimelineSlider, "Height", 0, 20, 250, 0);
+                animationen.createStoryboard(PlayTime, "Height", 0, 20, 250, 0);
+                wait = false;
+            }
         }
 
         private void OpenDirectoryDialog(object sender, RoutedEventArgs e)
         {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
-              System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-              String path = dialog.SelectedPath;
+                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                String path = dialog.SelectedPath;
                 if (result.ToString().Equals("OK"))
                 {
                     int idx = Sources.SelectedIndex;
-                    
+
                     media.Sources.Remove("Path");
-                    media.Sources["Path"] = MediaLoader.GetMediaENum(path,media.UsedExtensions);
-                    if (idx!= Sources.SelectedIndex)
+                    media.Sources["Path"] = MediaLoader.GetMediaENum(path, media.UsedExtensions);
+                    if (idx != Sources.SelectedIndex)
                     {
-                        Sources.SelectedIndex = media.Sources.Count-1;
+                        Sources.SelectedIndex = media.Sources.Count - 1;
                         media.Media = media.Sources["Path"];
                         media.CMedia = null;
                     }
-                    File.WriteAllText(media.path,path);
+                    File.WriteAllText(media.path, path);
                 }
             }
         }
 
-            private void OpenExtDialog(object sender, RoutedEventArgs e)
+        private void OpenExtDialog(object sender, RoutedEventArgs e)
         {
             if (extdia == null)
             {
-                extdia = new ExtensionDialog(this,media);
+                extdia = new ExtensionDialog(this, media);
                 //extdia.Owner = this;
                 extdia.Show();
             }
@@ -171,12 +240,12 @@ namespace MediaMVP
             var idx = Sources.SelectedIndex;
             var i = (KeyValuePair<String, ObservableCollection<Media>>)Sources.SelectedItem;
             media.Sources.Remove(i.Key);
-            Sources.SelectedIndex = idx>0 ? idx-1:0;
+            Sources.SelectedIndex = idx > 0 ? idx - 1 : 0;
         }
 
         private void EditPlaylist(object sender, RoutedEventArgs e)
         {
-            EditPlaylist ep = new EditPlaylist(media,Sources.SelectedItem);
+            EditPlaylist ep = new EditPlaylist(media, Sources.SelectedItem);
             ep.Owner = this;
             ep.Show();
         }
@@ -200,12 +269,12 @@ namespace MediaMVP
 
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> args)
         {
-           // Player.Volume = (double)volumeSlider.Value;
+            // Player.Volume = (double)volumeSlider.Value;
         }
 
         private void ChangeMediaSpeedRatio(object sender, RoutedPropertyChangedEventArgs<double> args)
         {
-           // Player.SpeedRatio = (double)speedRatioSlider.Value;
+            // Player.SpeedRatio = (double)speedRatioSlider.Value;
         }
 
         private void Element_MediaOpened(object sender, EventArgs e)
@@ -215,7 +284,7 @@ namespace MediaMVP
             Player.Play();
         }
 
-       private void Element_MediaEnded(object sender, EventArgs e)
+        private void Element_MediaEnded(object sender, EventArgs e)
         {
             playing = false;
             Medias.SelectedIndex += 1;
@@ -232,9 +301,9 @@ namespace MediaMVP
         {
             playing = true;
             int SliderValue = (int)TimelineSlider.Value;
-           TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
             Player.Position = ts;
-             Player.Play();
+            Player.Play();
         }
 
         void InitializePropertyValues()
