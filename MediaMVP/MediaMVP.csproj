@@ -152,7 +152,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="static files\Expand.png" />
     <Content Include="static files\intro.mp4" />
+    <Resource Include="static files\loop.png" />
+    <Resource Include="static files\Minimize.png" />
+    <Resource Include="static files\Next.png" />
+    <Resource Include="static files\Past.png" />
+    <Resource Include="static files\Pause.png" />
+    <Resource Include="static files\Play.png" />
+    <Resource Include="static files\Shufle.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Playlists\" />

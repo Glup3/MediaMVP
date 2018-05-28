@@ -74,12 +74,12 @@
             <Setter Property="IsSelected" Value="{Binding Selected, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ActivateExt"/>
         </Style>
-        <Image x:Key="Play" Source="C:\Users\Jakob\Pictures\Uplay\Play.png" />
-        <Image x:Key="Pause" Source="C:\Users\Jakob\Pictures\Uplay\Pause.png" />
-        <Image x:Key="Past" Source="C:\Users\Jakob\Pictures\Uplay\Past.png" />
-        <Image x:Key="Next" Source="C:\Users\Jakob\Pictures\Uplay\Next.png" />
-        <Image x:Key="Expand" Source="C:\Users\Jakob\Pictures\Uplay\Expand.png" />
-        <Image x:Key="Minimize" Source="C:\Users\Jakob\Pictures\Uplay\Minimize.png" />
+        <Image x:Key="Play" Source=".\static files\Play.png" />
+        <Image x:Key="Pause" Source=".\static files\Pause.png" />
+        <Image x:Key="Past" Source=".\static files\Past.png" />
+        <Image x:Key="Next" Source=".\static files\Next.png" />
+        <Image x:Key="Expand" Source=".\static files\Expand.png" />
+        <Image x:Key="Minimize" Source=".\static files\Minimize.png" />
     </Window.Resources>
     <!--Steht auch im Code Behind. Hier nur, weils angenehmer ist-
     <Window.DataContext>
@@ -193,7 +193,7 @@
                         </dock:LayoutAnchorablePane>
                     </dock:LayoutAnchorablePaneGroup>
 
-                    <dock:LayoutAnchorablePaneGroup Orientation="Vertical" >
+                    <dock:LayoutAnchorablePaneGroup Orientation="Vertical">
                         <!-- Mediaplayer in der Mitte -->
                         <dock:LayoutAnchorablePane CanRepositionItems="True">
                             <dock:LayoutAnchorable Title="Mediaplayer"
@@ -204,15 +204,15 @@
                                     <MediaElement Source="{Binding CMedia.MPath}"                                 
                                               Stretch="Fill"
                                               Name="Player"
-                                                      Width="{Binding ElementName=canvas, Path=Width}"
-                                                      Height="{Binding ElementName=canvas, Path=Height}"
+                                                  Width="{Binding ActualWidth, ElementName=canvas, Mode=OneWay}"
+                                                  Height="{Binding ActualHeight, ElementName=canvas, Mode=OneWay}"
                                               LoadedBehavior="Manual"
                                               UnloadedBehavior="Stop"
                                               Volume="{Binding ElementName=VolumeSlider, Path=Value}"
                                               MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
 
                                     <StackPanel Canvas.Bottom="0" Width="{Binding ActualWidth, ElementName=canvas, Mode=OneWay}">
-                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
+                                        <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
                                             <Button Height="20" Name="PastMedia" Content="{StaticResource Past}"/>
                                             <!--Click="OnMouseDownPlayPastMedia"/>-->
                                             <Button Height="20" Name="PauseMedia" Content="{StaticResource Pause}" Click="OnMouseDownPlayMedia"/>
