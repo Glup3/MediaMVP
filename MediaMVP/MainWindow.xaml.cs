@@ -54,10 +54,24 @@ namespace MediaMVP
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            Thickness mag = new Thickness();
             if (e.Key == Key.F11 && !first)
             {
                 first = true;
+                Fullscreen(first);
+            }
+            else if ((e.Key == Key.F11 || e.Key == Key.Escape) && first)
+            {
+
+                first = false;
+                Fullscreen(first);
+            }
+        }
+
+        public void Fullscreen(bool on)
+        {
+            Thickness mag = new Thickness();
+            if (on)
+            {
                 WindowState = WindowState.Maximized;
                 WindowStyle = WindowStyle.None;
                 Menu.Visibility = Visibility.Collapsed;
@@ -72,14 +86,11 @@ namespace MediaMVP
                 dockingManager.Margin = mag;
                 Mediaplayer.Title = "";
                 Mediaplayer.CanAutoHide = false;
-                Mediaplayer.CanClose = false;
                 Mediaplayer.CanFloat = false;
-                Mediaplayer.CanHide = false;
                 TimelineSlider.Width = 500;
             }
-            else if ((e.Key == Key.F11 || e.Key == Key.Escape) && first)
+            else if (!on)
             {
-                first = false;
                 WindowState = WindowState.Normal;
                 WindowStyle = WindowStyle.ThreeDBorderWindow;
                 Menu.Visibility = Visibility.Visible;
@@ -94,12 +105,10 @@ namespace MediaMVP
                 dockingManager.Margin = mag;
                 Mediaplayer.Title = "Mediaplayer";
                 Mediaplayer.CanAutoHide = true;
-                Mediaplayer.CanClose = true;
                 Mediaplayer.CanFloat = true;
-                Mediaplayer.CanHide = true;
                 TimelineSlider.Width = 100;
                 Cursor = Cursors.Arrow;
-                animationen.NormalModus(null, null, new List<Control> { PauseMedia, TimelineSlider, PlayTime }, null);
+                animationen.NormalModus(null, null, new List<Control> { PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
             }
         }
 
@@ -130,12 +139,13 @@ namespace MediaMVP
         {
             if (first)
             {
-                animationen.fullscreenModus(null, null, new List<Control> { PauseMedia, TimelineSlider, PlayTime }, null);
+                animationen.fullscreenModus(null, null, new List<Control> { PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
                 animationen.createStoryboard(PastMedia, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(PauseMedia, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(NextMedia, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(TimelineSlider, "Height", 20, 0, 500, 0);
-                animationen.createStoryboard(PlayTime, "Height", 20, 0, 500, 0);
+                animationen.createStoryboard(PlayTime, "Height", 25, 0, 500, 0);
+                animationen.createStoryboard(Expand, "Height", 20, 0, 500, 0);
             }
             // Hier kommt der Code für FadeOut hin, wenn die Maus in Fullscreen nicht mehr bewegt wird.
             Cursor = Cursors.None;
@@ -155,12 +165,13 @@ namespace MediaMVP
                 Cursor = Cursors.Arrow;
                 if (wait)
                 {
-                    animationen.NormalModus(null, null, new List<Control> { PauseMedia, TimelineSlider, PlayTime }, null);
+                    animationen.NormalModus(null, null, new List<Control> { PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
                     animationen.createStoryboard(PastMedia, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(PauseMedia, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(NextMedia, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(TimelineSlider, "Height", 0, 20, 500, 0);
-                    animationen.createStoryboard(PlayTime, "Height", 0, 20, 500, 0);
+                    animationen.createStoryboard(PlayTime, "Height", 0, 25, 500, 0);
+                    animationen.createStoryboard(Expand, "Height", 0, 20, 500, 0);
 
                     // Hier kommt der Code für FadeIn hin, wenn die Maus in Fullscreen bewegt wird.
                     wait = false;
@@ -169,16 +180,13 @@ namespace MediaMVP
             }
             if (!first && wait)
             {
-                animationen.createStoryboard(PauseMedia, "Opacity", 0, 1, 250, 0);
-                animationen.createStoryboard(PauseMedia, "Opacity", 0, 1, 250, 0);
-                animationen.createStoryboard(NextMedia, "Opacity", 0, 1, 250, 0);
-                animationen.createStoryboard(TimelineSlider, "Opacity", 0, 1, 250, 0);
-                animationen.createStoryboard(PlayTime, "Opacity", 0, 1, 250, 0);
+                animationen.NormalModus(null, null, new List<Control> { PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
                 animationen.createStoryboard(PastMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(PauseMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(NextMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(TimelineSlider, "Height", 0, 20, 250, 0);
-                animationen.createStoryboard(PlayTime, "Height", 0, 20, 250, 0);
+                animationen.createStoryboard(PlayTime, "Height", 0, 25, 250, 0);
+                animationen.createStoryboard(Expand, "Height", 0, 20, 250, 0);
                 wait = false;
             }
         }
@@ -253,11 +261,13 @@ namespace MediaMVP
         {
             if (playing)
             {
+                PauseMedia.Content = Resources["Play"];
                 playing = false;
                 Player.Pause();
             }
             else
             {
+                PauseMedia.Content = Resources["Pause"];
                 playing = true;
                 Player.Play();
             }
@@ -333,6 +343,30 @@ namespace MediaMVP
             int SliderValue = (int)TimelineSlider.Value;
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
             Player.Position = ts;
+        }
+
+        private void Expand_Click(object sender, RoutedEventArgs e)
+        {
+            if (!first)
+            {
+                Expand.Content = Resources["Minimize"];
+                first = true;
+                Fullscreen(first);
+            }
+            else
+            {
+                Expand.Content = Resources["Expand"];
+                first = false;
+                Fullscreen(first);
+            }
+        }
+
+        private void NextMedia_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("!!!!!!");
+            Console.WriteLine(Player.ActualHeight);
+            Console.WriteLine(Player.ActualWidth);
+            Console.WriteLine("!!!!!!");
         }
     }
 

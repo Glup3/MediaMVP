@@ -74,6 +74,12 @@
             <Setter Property="IsSelected" Value="{Binding Selected, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ActivateExt"/>
         </Style>
+        <Image x:Key="Play" Source="C:\Users\Jakob\Pictures\Uplay\Play.png" />
+        <Image x:Key="Pause" Source="C:\Users\Jakob\Pictures\Uplay\Pause.png" />
+        <Image x:Key="Past" Source="C:\Users\Jakob\Pictures\Uplay\Past.png" />
+        <Image x:Key="Next" Source="C:\Users\Jakob\Pictures\Uplay\Next.png" />
+        <Image x:Key="Expand" Source="C:\Users\Jakob\Pictures\Uplay\Expand.png" />
+        <Image x:Key="Minimize" Source="C:\Users\Jakob\Pictures\Uplay\Minimize.png" />
     </Window.Resources>
     <!--Steht auch im Code Behind. Hier nur, weils angenehmer ist-
     <Window.DataContext>
@@ -187,11 +193,13 @@
                         </dock:LayoutAnchorablePane>
                     </dock:LayoutAnchorablePaneGroup>
 
-                    <dock:LayoutAnchorablePaneGroup Orientation="Vertical">
+                    <dock:LayoutAnchorablePaneGroup Orientation="Vertical" >
                         <!-- Mediaplayer in der Mitte -->
-                        <dock:LayoutAnchorablePane DockHeight="6*" CanRepositionItems="True">
+                        <dock:LayoutAnchorablePane CanRepositionItems="True">
                             <dock:LayoutAnchorable Title="Mediaplayer"
-                                                   x:Name="Mediaplayer">
+                                                   x:Name="Mediaplayer"
+                                                   CanHide="False"
+                                                   CanClose="False">
                                 <Canvas Name="canvas">
                                     <MediaElement Source="{Binding CMedia.MPath}"                                 
                                               Stretch="Fill"
@@ -205,13 +213,14 @@
 
                                     <StackPanel Canvas.Bottom="0" Width="{Binding ActualWidth, ElementName=canvas, Mode=OneWay}">
                                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
-                                            <Button Height="20" Name="PastMedia" Content="/"/>
+                                            <Button Height="20" Name="PastMedia" Content="{StaticResource Past}"/>
                                             <!--Click="OnMouseDownPlayPastMedia"/>-->
-                                            <Button Height="20" Name="PauseMedia" Content="=" Click="OnMouseDownPlayMedia"/>
-                                            <Button Height="20" Name="NextMedia" Content="\"/> 
+                                            <Button Height="20" Name="PauseMedia" Content="{StaticResource Pause}" Click="OnMouseDownPlayMedia"/>
+                                            <Button Height="20" Name="NextMedia" Content="{StaticResource Next}" Click="NextMedia_Click"/> 
                                             <!--Click="OnMouseDownPlayNextMedia"/>-->
                                             <Slider Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
-                                            <Label Name="PlayTime"></Label>
+                                            <Label Height="25" Name="PlayTime"></Label>
+                                            <Button Height="20" Name="Expand" Content="{StaticResource Expand}" Click="Expand_Click"/>
                                             <!--<StackPanel Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
                                     <Button Content=">" Click="OnMouseDownPlayMedia"/>
                                     <Slider Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
