@@ -74,6 +74,8 @@
             <Setter Property="IsSelected" Value="{Binding Selected, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ActivateExt"/>
         </Style>
+        <Image x:Key="Loop" Source=".\static files\Loop.png" />
+        <Image x:Key="Shuffle" Source=".\static files\Shuffle.png" />
         <Image x:Key="Play" Source=".\static files\Play.png" />
         <Image x:Key="Pause" Source=".\static files\Pause.png" />
         <Image x:Key="Past" Source=".\static files\Past.png" />
@@ -213,14 +215,15 @@
 
                                     <StackPanel Canvas.Bottom="0" Width="{Binding ActualWidth, ElementName=canvas, Mode=OneWay}">
                                         <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
-                                            <Button Height="20" Name="PastMedia" Content="{StaticResource Past}"/>
+                                            <Button Height="25" Name="ShuffleMedia" Content="{StaticResource Loop}" Click="ShuffleMedia_Click"/>
+                                            <Button Height="25" Name="PastMedia" Content="{StaticResource Past}" Click="PastMedia_Click"/>
                                             <!--Click="OnMouseDownPlayPastMedia"/>-->
-                                            <Button Height="20" Name="PauseMedia" Content="{StaticResource Pause}" Click="OnMouseDownPlayMedia"/>
-                                            <Button Height="20" Name="NextMedia" Content="{StaticResource Next}" Click="NextMedia_Click"/> 
+                                            <Button Height="25" Name="PauseMedia" Content="{StaticResource Pause}" Click="OnMouseDownPlayMedia"/>
+                                            <Button Height="25" Name="NextMedia" Content="{StaticResource Next}" Click="NextMedia_Click"/> 
                                             <!--Click="OnMouseDownPlayNextMedia"/>-->
-                                            <Slider Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
-                                            <Label Height="25" Name="PlayTime"></Label>
-                                            <Button Height="20" Name="Expand" Content="{StaticResource Expand}" Click="Expand_Click"/>
+                                            <Slider Height="25" Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
+                                            <Label Height="25" Content="--:--" Name="PlayTime"></Label>
+                                            <Button Height="25" Name="Expand" Content="{StaticResource Expand}" Click="Expand_Click"/>
                                             <!--<StackPanel Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
                                     <Button Content=">" Click="OnMouseDownPlayMedia"/>
                                     <Slider Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>

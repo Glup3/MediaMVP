@@ -27,6 +27,7 @@ namespace MediaMVP
     {
         private bool playing = true;
         private bool first;
+        private bool shuffle;
         private bool wait;
         Animationen animationen;
         DispatcherTimer inactivity;
@@ -292,6 +293,7 @@ namespace MediaMVP
             TimelineSlider.Maximum = Player.NaturalDuration.TimeSpan.TotalMilliseconds;
             TimelineSlider.Value = Player.Position.TotalMilliseconds;
             Player.Play();
+            PauseMedia.Content = Resources["Pause"];
         }
 
         private void Element_MediaEnded(object sender, EventArgs e)
@@ -305,6 +307,7 @@ namespace MediaMVP
         {
             Player.Pause();
             playing = false;
+            PauseMedia.Content = Resources["Play"];
         }
 
         private void DragCompleted(object sender, DragCompletedEventArgs args)
@@ -314,6 +317,7 @@ namespace MediaMVP
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
             Player.Position = ts;
             Player.Play();
+            PauseMedia.Content = Resources["Pause"];
         }
 
         void InitializePropertyValues()
@@ -325,6 +329,7 @@ namespace MediaMVP
         private void Medias_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Player.Play();
+            PauseMedia.Content = Resources["Pause"];
             playing = true;
             TimelineSlider.Value = 0;
         }
@@ -360,13 +365,73 @@ namespace MediaMVP
                 Fullscreen(first);
             }
         }
+        private void PastMedia_Click(object sender, RoutedEventArgs e)
+        {
+            Player.Stop();
+            if ((Medias.SelectedIndex - 1) < 0)
+            {
+                Medias.SelectedIndex = Medias.Items.Count - 1;
+            }
+            else
+            {
+                Medias.SelectedIndex--;
+            }
+            PlayTime.Content = "--:--:--";
+            Player.Play();
+            PauseMedia.Content = Resources["Pause"];
 
+        }
         private void NextMedia_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("!!!!!!");
-            Console.WriteLine(Player.ActualHeight);
-            Console.WriteLine(Player.ActualWidth);
-            Console.WriteLine("!!!!!!");
+            Random r = new Random();
+            int add = r.Next(0, Medias.Items.Count);
+            Player.Stop();
+            if (!shuffle)
+            {
+                if (Medias.SelectedIndex + 1 < Medias.Items.Count)
+                {
+                    Medias.SelectedIndex++;
+                }
+                else
+                {
+                    Medias.SelectedIndex = 0;
+                }
+            }
+            else
+            {
+                if ((Medias.SelectedIndex + add) < Medias.Items.Count)
+                {
+                    Medias.SelectedIndex += add;
+                }
+                else
+                {
+                    add = (Medias.SelectedIndex + add) - Medias.Items.Count;
+                    if (add == Medias.SelectedIndex)
+                    {
+                        Medias.SelectedIndex = add + 2;
+                    }
+                    else
+                    {
+                        Medias.SelectedIndex = add;
+                    }
+                }
+            }
+            PlayTime.Content = "--:--:--";
+            Player.Play();
+            PauseMedia.Content = Resources["Pause"];
+        }
+        private void ShuffleMedia_Click(object sender, RoutedEventArgs e)
+        {
+            if (!shuffle)
+            {
+                ShuffleMedia.Content = Resources["Shuffle"];
+                shuffle = true;
+            }
+            else
+            {
+                ShuffleMedia.Content = Resources["Loop"];
+                shuffle = false;
+            }
         }
     }
 
