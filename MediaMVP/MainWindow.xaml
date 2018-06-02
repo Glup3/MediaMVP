@@ -11,6 +11,7 @@
     <Window.Resources>
         <!--<local:MediaLoader x:Key="Data"/>-->
         <local:IsPlaylistConverter x:Key="PlayConv"/>
+        <local:VisibilityConverter x:Key="Visible"/>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -88,6 +89,7 @@
         <Image x:Key="Next" Source=".\static files\Next.png" />
         <Image x:Key="Expand" Source=".\static files\Expand.png" />
         <Image x:Key="Minimize" Source=".\static files\Minimize.png" />
+        <Image x:Key="Volume" Source=".\static files\Volume.png" />
     </Window.Resources>
     <!--Steht auch im Code Behind. Hier nur, weils angenehmer ist-
     <Window.DataContext>
@@ -185,7 +187,7 @@
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
                     </dock:LayoutAnchorablePaneGroup>
-                    <dock:LayoutAnchorablePaneGroup>
+                    <dock:LayoutAnchorablePaneGroup DockWidth="0.5*">
                         <dock:LayoutAnchorablePane DockWidth="1*">
                             <dock:LayoutAnchorable Title="Media"
                                                    x:Name="Media"
@@ -201,7 +203,7 @@
                         </dock:LayoutAnchorablePane>
                     </dock:LayoutAnchorablePaneGroup>
 
-                    <dock:LayoutAnchorablePaneGroup Orientation="Vertical">
+                    <dock:LayoutAnchorablePaneGroup Orientation="Vertical" DockWidth="2*">
                         <!-- Mediaplayer in der Mitte -->
                         <dock:LayoutAnchorablePane CanRepositionItems="True">
                             <dock:LayoutAnchorable Title="Mediaplayer"
@@ -219,24 +221,60 @@
                                               Volume="{Binding ElementName=VolumeSlider, Path=Value}"
                                               MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded"/>
 
-                                    <StackPanel Canvas.Bottom="0" Width="{Binding ActualWidth, ElementName=canvas, Mode=OneWay}">
-                                        <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
-                                            <Button Height="20" Name="ShuffleMedia" Content="{StaticResource Loop}" Click="ShuffleMedia_Click"/>
-                                            <Button Height="20" Name="PastMedia" Content="{StaticResource Past}" Click="PastMedia_Click"/>
+                                    <Grid Canvas.Bottom="0" Width="{Binding ActualWidth, ElementName=canvas, Mode=OneWay}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*"></RowDefinition>
+                                            <RowDefinition Height="1*"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                                            <ColumnDefinition Width="8.5*"></ColumnDefinition>
+                                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid Grid.Row="1" Grid.Column="1">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*"></RowDefinition>
+                                                <RowDefinition Height="1*"></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                                <ColumnDefinition Width="3.5*"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="9" Name="UI" Fill="#997E7E7E"></Rectangle>
+                                            <Button Grid.Row="1" Grid.Column="0" Height="20" Name="ShuffleMedia" Content="{StaticResource Loop}" Click="ShuffleMedia_Click"/>
+                                            <Button Grid.Row="1" Grid.Column="1" Height="20" Name="PastMedia" Content="{StaticResource Past}" Click="PastMedia_Click"/>
                                             <!--Click="OnMouseDownPlayPastMedia"/>-->
-                                            <Button Height="20" Name="PauseMedia" Content="{StaticResource Pause}" Click="OnMouseDownPlayMedia"/>
-                                            <Button Height="20" Name="NextMedia" Content="{StaticResource Next}" Click="NextMedia_Click"/> 
+                                            <Button Grid.Row="1" Grid.Column="2" Height="20" Name="PauseMedia" Content="{StaticResource Pause}" Click="OnMouseDownPlayMedia"/>
+                                            <Button Grid.Row="1" Grid.Column="3" Height="20" Name="NextMedia" Content="{StaticResource Next}" Click="NextMedia_Click"/>
                                             <!--Click="OnMouseDownPlayNextMedia"/>-->
-                                            <Slider Height="20" Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
-                                            <Label Height="25" Content="--:--" Name="PlayTime"></Label>
-                                            <Button Height="20" Name="Expand" Content="{StaticResource Expand}" Click="Expand_Click"/>
-                                            <!--<StackPanel Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
+                                            <Slider Grid.Row="1" Grid.Column="4" Height="20"  Name="TimelineSlider" MouseDown="SetPosition" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
+                                            <Label HorizontalAlignment="Left" Grid.Row="1" Grid.Column="5" Height="25" Content="--:--" Name="PlayTime"></Label>
+                                            <Button Grid.Row="1" Grid.Column="6" Height="20" Name="Expand" Content="{StaticResource Expand}" Click="Expand_Click"/>
+                                            <Button Grid.Row="1" Grid.Column="7" Name="Volume" Content="{StaticResource Volume}" Click="ShowVolume" Height="20"></Button>
+                                            <Button Grid.Row="1" Grid.Column="8" Name="Speed" Click="ShowSpeed" Height="20">
+                                                <TextBlock>
+                                                <Run Text="{Binding ElementName=SpeedSlider, Path=Value}"></Run>
+                                                <Run>x</Run>
+                                                </TextBlock>
+                                            </Button>
+                                            <Slider Value="100" Minimum="0" Maximum="100" Name="VolumeSlider" Visibility="{Binding VolumeV, Converter={StaticResource Visible},ConverterParameter=True}" Grid.Row="0" Grid.Column="7" Orientation="Vertical" Height="80"
+                                                    ValueChanged="ChangeMediaVolume" IsMoveToPointEnabled="True"></Slider>
+                                            <Slider Minimum="1" Maximum="8" Name="SpeedSlider" Visibility="{Binding SpeedV, Converter={StaticResource Visible},ConverterParameter=True}" Grid.Row="0" Grid.Column="8" Orientation="Vertical" Height="80"
+                                                    ValueChanged="ChangeMediaSpeedRatio" IsMoveToPointEnabled="True" Value="1" IsSnapToTickEnabled="True"></Slider>
+                                        </Grid>
+                                        <!--<StackPanel Orientation="Horizontal" x:Name="wrapPanel" local:MarginSetter.Margin="2">
                                     <Button Content=">" Click="OnMouseDownPlayMedia"/>
                                     <Slider Width="100" Name="TimelineSlider" Thumb.DragStarted="DragStarted" Thumb.DragCompleted="DragCompleted"/>
                                     <Label Name="PlayTime"></Label>
                                 </StackPanel>-->
-                                        </StackPanel>
-                                    </StackPanel>
+                                    </Grid>
                                 </Canvas>
                             </dock:LayoutAnchorable>
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -14,8 +15,17 @@ namespace MediaMVP
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool v = (bool)value;
-            if (!v) return Visibility.Visible;
-            return Visibility.Collapsed;
+            if (parameter == null)
+            {
+                if (!v) return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+            else
+            {
+                String p = parameter as String;                
+                if ((p=="True" && v) || (p=="False"&&!v)) return Visibility.Visible;
+                return Visibility.Hidden;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

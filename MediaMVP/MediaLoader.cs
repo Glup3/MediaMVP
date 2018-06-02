@@ -15,6 +15,18 @@ namespace MediaMVP
     class MediaLoader : INotifyPropertyChanged
     {
         public String path;
+        private bool volumeV;
+        public bool VolumeV
+        {
+            get { return volumeV; }
+            set { volumeV = value; OnPropertyChanged(); }
+        }
+        private bool speedV;
+        public bool SpeedV
+        {
+            get { return speedV; }
+            set { speedV = value; OnPropertyChanged(); }
+        }
         public ASCIIEncoding enc = new System.Text.ASCIIEncoding();
         public MediaLoader()
         {

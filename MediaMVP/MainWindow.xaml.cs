@@ -35,6 +35,7 @@ namespace MediaMVP
         DispatcherTimer player;
         MediaLoader media;
         public ExtensionDialog extdia;
+        int speed = 1; 
 
         public MainWindow()
         {
@@ -111,7 +112,7 @@ namespace MediaMVP
                 //Style style = (Style)Resources["titel"];
                 //Setter setter = (Setter)style.Setters[0];
                 //setter.Value = 19;
-                animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand,Volume }, null);
             }
         }
 
@@ -130,6 +131,7 @@ namespace MediaMVP
         {
             if (Player.HasAudio || Player.HasVideo)
             {
+               // Player.Position = new TimeSpan(0,0,0,0,Player.Position.Milliseconds+player.Interval.Milliseconds*(speed));
                 String ts = Player.Position.ToString();
                 int start = ts.LastIndexOf(".");
                 if (start > -1) PlayTime.Content = ts.Remove(start, ts.Length - start);
@@ -142,7 +144,7 @@ namespace MediaMVP
         {
             if (first)
             {
-                animationen.fullscreenModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                animationen.fullscreenModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand,Volume }, null);
                 animationen.createStoryboard(ShuffleMedia, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(PastMedia, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(PauseMedia, "Height", 20, 0, 500, 0);
@@ -150,6 +152,11 @@ namespace MediaMVP
                 animationen.createStoryboard(TimelineSlider, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(PlayTime, "Height", 25, 0, 500, 0);
                 animationen.createStoryboard(Expand, "Height", 20, 0, 500, 0);
+                animationen.createStoryboard(Volume, "Height", 20, 0, 500, 0);
+                animationen.createStoryboard(Speed, "Height", 20, 0, 500, 0);
+                UI.Fill = Brushes.Transparent;
+                media.VolumeV = false;
+                media.SpeedV = false;
             }
             // Hier kommt der Code für FadeOut hin, wenn die Maus in Fullscreen nicht mehr bewegt wird.
             Cursor = Cursors.None;
@@ -169,7 +176,7 @@ namespace MediaMVP
                 Cursor = Cursors.Arrow;
                 if (wait)
                 {
-                    animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                    animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand,Volume }, null);
                     animationen.createStoryboard(ShuffleMedia, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(PastMedia, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(PauseMedia, "Height", 0, 20, 500, 0);
@@ -177,7 +184,8 @@ namespace MediaMVP
                     animationen.createStoryboard(TimelineSlider, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(PlayTime, "Height", 0, 25, 500, 0);
                     animationen.createStoryboard(Expand, "Height", 0, 20, 500, 0);
-
+                    animationen.createStoryboard(Volume, "Height", 00, 20, 500, 0);
+                    animationen.createStoryboard(Speed, "Height", 00, 20, 500, 0);
                     // Hier kommt der Code für FadeIn hin, wenn die Maus in Fullscreen bewegt wird.
                     wait = false;
                 }
@@ -185,7 +193,7 @@ namespace MediaMVP
             }
             if (!first && wait)
             {
-                animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand,Volume }, null);
                 animationen.createStoryboard(ShuffleMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(PastMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(PauseMedia, "Height", 0, 20, 250, 0);
@@ -193,8 +201,11 @@ namespace MediaMVP
                 animationen.createStoryboard(TimelineSlider, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(PlayTime, "Height", 0, 25, 250, 0);
                 animationen.createStoryboard(Expand, "Height", 0, 20, 250, 0);
+                animationen.createStoryboard(Volume, "Height", 0, 20, 250, 0);
+                animationen.createStoryboard(Speed, "Height", 0, 20, 250, 0);
                 wait = false;
             }
+            UI.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#997E7E7E"));
         }
 
         private void OpenDirectoryDialog(object sender, RoutedEventArgs e)
@@ -287,12 +298,13 @@ namespace MediaMVP
 
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> args)
         {
-            // Player.Volume = (double)volumeSlider.Value;
+            Player.Volume = (double)VolumeSlider.Value/VolumeSlider.Maximum;
         }
 
         private void ChangeMediaSpeedRatio(object sender, RoutedPropertyChangedEventArgs<double> args)
         {
-            // Player.SpeedRatio = (double)speedRatioSlider.Value;
+            //Player.SpeedRatio = SpeedSlider.Value;
+           // speed = (int)SpeedSlider.Value;
         }
 
         private void Element_MediaOpened(object sender, EventArgs e)
@@ -305,8 +317,10 @@ namespace MediaMVP
 
         private void Element_MediaEnded(object sender, EventArgs e)
         {
+            PauseMedia.Content = Resources["Play"];
             playing = false;
-            Medias.SelectedIndex += 1;
+            if(Medias.SelectedIndex<Medias.Items.Count-1)Medias.SelectedIndex += 1;
+           // Player.Pause();
         }
 
 
@@ -358,7 +372,6 @@ namespace MediaMVP
 
         private void TimelineSlider_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine("ss");
             int SliderValue = (int)TimelineSlider.Value;
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
             Player.Position = ts;
@@ -457,6 +470,27 @@ namespace MediaMVP
                 ShuffleMedia.Content = Resources["Loop"];
                 shuffle = false;
             }
+        }
+
+        private void ShowVolume(object sender, RoutedEventArgs e)
+        {
+            media.VolumeV = !media.VolumeV;
+        }
+
+        private void ShowSpeed(object sender, RoutedEventArgs e)
+        {
+            media.SpeedV = !media.SpeedV;
+        }
+
+        private void SetPosition(object sender, MouseButtonEventArgs e)
+        {
+            Player.Pause();
+            playing = false;
+            int SliderValue = (int)TimelineSlider.Value;
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
+            Player.Position = ts;
+                playing = true;
+                Player.Play();
         }
     }
 
