@@ -29,6 +29,7 @@ namespace MediaMVP
         private bool first;
         private bool shuffle;
         private bool wait;
+        private bool stop = true;
         Animationen animationen;
         DispatcherTimer inactivity;
         DispatcherTimer player;
@@ -85,7 +86,6 @@ namespace MediaMVP
                 mag.Right = 0;
                 mag.Bottom = 0;
                 dockingManager.Margin = mag;
-                Mediaplayer.Title = "";
                 Mediaplayer.CanAutoHide = false;
                 Mediaplayer.CanFloat = false;
                 TimelineSlider.Width = 500;
@@ -104,12 +104,14 @@ namespace MediaMVP
                 mag.Right = 5;
                 mag.Bottom = 2;
                 dockingManager.Margin = mag;
-                Mediaplayer.Title = "Mediaplayer";
                 Mediaplayer.CanAutoHide = true;
                 Mediaplayer.CanFloat = true;
                 TimelineSlider.Width = 100;
                 Cursor = Cursors.Arrow;
-                animationen.NormalModus(null, null, new List<Control> { PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                //Style style = (Style)Resources["titel"];
+                //Setter setter = (Setter)style.Setters[0];
+                //setter.Value = 19;
+                animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
             }
         }
 
@@ -140,7 +142,8 @@ namespace MediaMVP
         {
             if (first)
             {
-                animationen.fullscreenModus(null, null, new List<Control> { PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                animationen.fullscreenModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                animationen.createStoryboard(ShuffleMedia, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(PastMedia, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(PauseMedia, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(NextMedia, "Height", 20, 0, 500, 0);
@@ -166,7 +169,8 @@ namespace MediaMVP
                 Cursor = Cursors.Arrow;
                 if (wait)
                 {
-                    animationen.NormalModus(null, null, new List<Control> { PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                    animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                    animationen.createStoryboard(ShuffleMedia, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(PastMedia, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(PauseMedia, "Height", 0, 20, 500, 0);
                     animationen.createStoryboard(NextMedia, "Height", 0, 20, 500, 0);
@@ -181,7 +185,8 @@ namespace MediaMVP
             }
             if (!first && wait)
             {
-                animationen.NormalModus(null, null, new List<Control> { PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand }, null);
+                animationen.createStoryboard(ShuffleMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(PastMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(PauseMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(NextMedia, "Height", 0, 20, 250, 0);
@@ -264,12 +269,14 @@ namespace MediaMVP
             {
                 PauseMedia.Content = Resources["Play"];
                 playing = false;
+                stop = false;
                 Player.Pause();
             }
             else
             {
                 PauseMedia.Content = Resources["Pause"];
                 playing = true;
+                stop = true;
                 Player.Play();
             }
             if (TimelineSlider.Value == TimelineSlider.Maximum)
@@ -312,12 +319,16 @@ namespace MediaMVP
 
         private void DragCompleted(object sender, DragCompletedEventArgs args)
         {
-            playing = true;
+
             int SliderValue = (int)TimelineSlider.Value;
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
             Player.Position = ts;
-            Player.Play();
-            PauseMedia.Content = Resources["Pause"];
+            if (stop)
+            {
+                playing = true;
+                Player.Play();
+                PauseMedia.Content = Resources["Pause"];
+            }
         }
 
         void InitializePropertyValues()
@@ -331,7 +342,9 @@ namespace MediaMVP
             Player.Play();
             PauseMedia.Content = Resources["Pause"];
             playing = true;
+            stop = true;
             TimelineSlider.Value = 0;
+            Medias.ScrollToCenterOfView(Medias.SelectedItem);
         }
 
         private void Sources_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -340,6 +353,7 @@ namespace MediaMVP
             TimelineSlider.Value = 0;
             Player.Stop();
             playing = false;
+            stop = false;
         }
 
         private void TimelineSlider_MouseDown(object sender, MouseButtonEventArgs e)
@@ -371,13 +385,17 @@ namespace MediaMVP
             if ((Medias.SelectedIndex - 1) < 0)
             {
                 Medias.SelectedIndex = Medias.Items.Count - 1;
+                Medias.ScrollToCenterOfView(Medias.SelectedItem);
             }
             else
             {
                 Medias.SelectedIndex--;
+                Medias.ScrollToCenterOfView(Medias.SelectedItem);
             }
             PlayTime.Content = "--:--:--";
+            TimelineSlider.Value = 0;
             Player.Play();
+            stop = true;
             PauseMedia.Content = Resources["Pause"];
 
         }
@@ -391,10 +409,12 @@ namespace MediaMVP
                 if (Medias.SelectedIndex + 1 < Medias.Items.Count)
                 {
                     Medias.SelectedIndex++;
+                    Medias.ScrollToCenterOfView(Medias.SelectedItem);
                 }
                 else
                 {
                     Medias.SelectedIndex = 0;
+                    Medias.ScrollToCenterOfView(Medias.SelectedItem);
                 }
             }
             else
@@ -402,6 +422,7 @@ namespace MediaMVP
                 if ((Medias.SelectedIndex + add) < Medias.Items.Count)
                 {
                     Medias.SelectedIndex += add;
+                    Medias.ScrollToCenterOfView(Medias.SelectedItem);
                 }
                 else
                 {
@@ -409,15 +430,19 @@ namespace MediaMVP
                     if (add == Medias.SelectedIndex)
                     {
                         Medias.SelectedIndex = add + 2;
+                        Medias.ScrollToCenterOfView(Medias.SelectedItem);
                     }
                     else
                     {
                         Medias.SelectedIndex = add;
+                        Medias.ScrollToCenterOfView(Medias.SelectedItem);
                     }
                 }
             }
             PlayTime.Content = "--:--:--";
+            TimelineSlider.Value = 0;
             Player.Play();
+            stop = true;
             PauseMedia.Content = Resources["Pause"];
         }
         private void ShuffleMedia_Click(object sender, RoutedEventArgs e)

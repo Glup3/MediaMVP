@@ -79,6 +79,7 @@
     <Compile Include="Extension.cs" />
     <Compile Include="IsPlaylistConverter.cs" />
     <Compile Include="IsValidPName.cs" />
+    <Compile Include="ItemsControlExtensions.cs" />
     <Compile Include="MarginSetter.cs" />
     <Compile Include="PlaylistDialog.xaml.cs">
       <DependentUpon>PlaylistDialog.xaml</DependentUpon>
