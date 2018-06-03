@@ -245,7 +245,7 @@
                                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                                                 <ColumnDefinition Width="25"></ColumnDefinition>
                                                 <ColumnDefinition Width="25"></ColumnDefinition>
-                                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                                <!--<ColumnDefinition Width="25"></ColumnDefinition>-->
                                             </Grid.ColumnDefinitions>
                                             <Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="9" Name="UI" Fill="#997E7E7E"></Rectangle>
                                             <Button Grid.Row="1" Grid.Column="0" Height="20" Name="ShuffleMedia" Content="{StaticResource Loop}" Click="ShuffleMedia_Click"/>
@@ -258,7 +258,7 @@
                                             <Label HorizontalAlignment="Left" Grid.Row="1" Grid.Column="5" Height="25" Content="--:--" Name="PlayTime"></Label>
                                             <Button Grid.Row="1" Grid.Column="6" Height="20" Name="Expand" Content="{StaticResource Expand}" Click="Expand_Click"/>
                                             <Button Grid.Row="1" Grid.Column="7" Name="Volume" Content="{StaticResource Volume}" Click="ShowVolume" Height="20"></Button>
-                                            <Button Grid.Row="1" Grid.Column="8" Name="Speed" Click="ShowSpeed" Height="20">
+                                            <Button Visibility="Collapsed" Grid.Row="1" Grid.Column="8" Name="Speed" Click="ShowSpeed" Height="20">
                                                 <TextBlock>
                                                 <Run Text="{Binding ElementName=SpeedSlider, Path=Value}"></Run>
                                                 <Run>x</Run>
