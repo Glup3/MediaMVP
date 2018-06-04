@@ -74,6 +74,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DefaultImgConverter.cs" />
     <Compile Include="EditPlaylist.xaml.cs">
       <DependentUpon>EditPlaylist.xaml</DependentUpon>
     </Compile>
@@ -156,6 +157,7 @@
   <ItemGroup>
     <Resource Include="static files\Volume.png" />
     <Resource Include="static files\Expand.png" />
+    <Resource Include="static files\defaultimg.png" />
     <Content Include="static files\intro.mp4" />
     <Resource Include="static files\Loop.png" />
     <Resource Include="static files\Minimize.png" />

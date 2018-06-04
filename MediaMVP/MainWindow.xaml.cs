@@ -89,7 +89,6 @@ namespace MediaMVP
                 dockingManager.Margin = mag;
                 Mediaplayer.CanAutoHide = false;
                 Mediaplayer.CanFloat = false;
-                TimelineSlider.Width = 500;
             }
             else if (!on)
             {
@@ -107,7 +106,6 @@ namespace MediaMVP
                 dockingManager.Margin = mag;
                 Mediaplayer.CanAutoHide = true;
                 Mediaplayer.CanFloat = true;
-                TimelineSlider.Width = 100;
                 Cursor = Cursors.Arrow;
                 //Style style = (Style)Resources["titel"];
                 //Setter setter = (Setter)style.Setters[0];
@@ -154,7 +152,7 @@ namespace MediaMVP
                 animationen.createStoryboard(Expand, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(Volume, "Height", 20, 0, 500, 0);
                 animationen.createStoryboard(Speed, "Height", 20, 0, 500, 0);
-                UI.Fill = Brushes.Transparent;
+                UI.Background = Brushes.Transparent;
                 media.VolumeV = false;
                 media.SpeedV = false;
             }
@@ -194,6 +192,7 @@ namespace MediaMVP
             if (!first && wait)
             {
                 animationen.NormalModus(null, null, new List<Control> { ShuffleMedia, PastMedia, PauseMedia, NextMedia, TimelineSlider, PlayTime, Expand,Volume }, null);
+                //animationen.createStoryboard(UI, "Height", 0, 27, 250, 0);
                 animationen.createStoryboard(ShuffleMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(PastMedia, "Height", 0, 20, 250, 0);
                 animationen.createStoryboard(PauseMedia, "Height", 0, 20, 250, 0);
@@ -205,7 +204,7 @@ namespace MediaMVP
                 animationen.createStoryboard(Speed, "Height", 0, 20, 250, 0);
                 wait = false;
             }
-            UI.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#997E7E7E"));
+            UI.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#997E7E7E"));
         }
 
         private void OpenDirectoryDialog(object sender, RoutedEventArgs e)
